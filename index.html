@@ -10,147 +10,101 @@
   <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet" />
   <style>
     :root{
-      /* Audio-Cult nahes, helles Theme */
-      --bg:#f1f3f5;         /* Seitenhintergrund */
-      --card:#f6f7f9;       /* Kartenhintergrund (ganz leicht abgesetzt) */
-      --fg:#2b3035;         /* Text */
-      --muted:#6b7280;      /* dezente Texte */
-      --line:#d9dee5;       /* Linien/Border */
-      --play:#0f172a;       /* dunkles Navy für Play-Button */
-      --accent:#0f172a;     /* Akzent (Progress/Thumb) */
-      --pill:#eceff3;       /* für Sprach-Pill/Buttons */
+      --bg:#f1f3f5; --card:#f6f7f9; --fg:#2b3035; --muted:#6b7280; --line:#d9dee5;
+      --play:#0f172a; --accent:#0f172a; --pill:#eceff3;
     }
-    @media (prefers-color-scheme: dark){
-      /* Falls Gerät im Dark Mode – trotzdem helle AC-Optik beibehalten */
-      :root{ --bg:#f1f3f5; --card:#f6f7f9; --fg:#2b3035; --muted:#6b7280; --line:#d9dee5; --play:#0f172a; --accent:#0f172a; --pill:#eceff3; }
-    }
-
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{
       margin:0; background:var(--bg); color:var(--fg);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
-      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      -webkit-font-smoothing:antialiased;
     }
+    .wrap{max-width:760px;margin:0 auto;padding:10px 12px 18px;display:flex;flex-direction:column;gap:10px}
 
-    .wrap{max-width:760px;margin:0 auto;padding:18px 16px 24px;display:flex;flex-direction:column;gap:16px}
-    header{display:flex;align-items:center;justify-content:space-between;gap:10px}
-    h1{
-      margin:0;
-      font-size:clamp(16px,3.8vw,18px);
-      font-weight:400;              /* NICHT fett */
-      color:var(--muted);           /* dezent */
-      letter-spacing:.02em;
+    /* ===== KOMPAKTER TOP-BAR (48px) ===== */
+    .topbar{
+      height:48px; display:flex; align-items:center; justify-content:space-between; gap:8px;
     }
-
-    /* Sprachwahl – sehr zurückhaltend */
+    .title{
+      font-size:14px; font-weight:400; color:var(--muted); letter-spacing:.01em;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:70vw;
+    }
     .lang{
-      display:inline-flex; gap:0; border:1px solid var(--line);
-      background:var(--pill); border-radius:999px; overflow:hidden; flex-shrink:0;
+      display:inline-flex; border:1px solid var(--line); background:var(--pill);
+      border-radius:999px; overflow:hidden;
     }
     .lang button{
-      border:0; background:transparent; color:var(--muted);
-      font-weight:600; font-size:12px; padding:6px 12px; display:flex; align-items:center; gap:6px; cursor:pointer;
+      border:0; background:transparent; color:var(--muted); font-weight:600;
+      font-size:12px; padding:6px 10px; display:flex; align-items:center; gap:6px; cursor:pointer;
     }
-    .lang button.active{ color:var(--fg); background:#e9edf2; }
+    .lang button.active{color:var(--fg); background:#e9edf2}
 
-    /* Karte wie bei Audio-Cult */
+    /* Karte kompakter */
     .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:14px;
-      display:flex; flex-direction:column; gap:14px;
+      background:var(--card); border:1px solid var(--line); border-radius:14px;
+      padding:10px; display:flex; flex-direction:column; gap:10px;
     }
-
     .cover{
-      width:100%; aspect-ratio:1/1; object-fit:cover;
-      border-radius:12px; border:1px solid var(--line);
-      display:block;
-      background:#e6eaef;
+      width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:12px;
+      border:1px solid var(--line); background:#e6eaef;
     }
 
-    /* Track-Titel (unter Cover) – dezent, aber etwas größer */
-    .track-title{
-      text-align:center; margin:2px 0 4px;
-      font-size:clamp(18px,4.6vw,22px);
-      font-weight:500; color:#3a4149;
-    }
-
-    /* Fortschrittsleiste – schlank */
-    .scrub{display:flex; flex-direction:column; gap:6px}
+    /* Progress dicht unter Cover */
+    .scrub{display:flex; flex-direction:column; gap:4px}
     .progress{
-      position:relative; width:100%; height:7px; border-radius:999px;
-      background:#e2e7ee; border:1px solid var(--line);
-      cursor:pointer; touch-action:none;
+      position:relative; width:100%; height:6px; border-radius:999px;
+      background:#e2e7ee; border:1px solid var(--line); cursor:pointer; touch-action:none;
     }
-    .bar{position:absolute; left:0; top:0; height:100%; width:0%; background:var(--accent); border-radius:999px}
-    .thumb{
-      position:absolute; top:50%; transform:translate(-50%,-50%);
-      width:16px; height:16px; border-radius:50%;
-      background:var(--accent); box-shadow:0 0 0 6px rgba(15,23,42,.08);
-    }
-    .times{display:flex; justify-content:space-between; font-size:12px; color:var(--muted)}
+    .bar{position:absolute;left:0;top:0;height:100%;width:0%;background:var(--accent);border-radius:999px}
+    .thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 5px rgba(15,23,42,.08)}
+    .times{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
 
-    /* Controls – zentral, Play groß, Skip nur Text + kleine Pfeile (AC-Look) */
-    .controls{
-      display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:10px;
-      margin-top:4px;
-    }
+    /* Controls kompakter, Mitte groß */
+    .controls{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin-top:2px}
     .skip{
-      display:flex; align-items:center; justify-content:center; gap:6px;
-      color:var(--muted); font-weight:600; font-size:14px; cursor:pointer; user-select:none;
-      background:transparent; border:0; padding:8px 6px;
+      justify-self:center; display:inline-flex; align-items:center; gap:6px;
+      color:var(--muted); font-weight:600; font-size:14px; background:transparent; border:0; padding:6px 4px; cursor:pointer;
     }
-    .skip svg{width:18px;height:18px; fill:currentColor; opacity:.65}
-    .skip:active{opacity:.8}
-
+    .skip svg{width:16px;height:16px;opacity:.65;fill:currentColor}
     .play{
-      width:76px; height:76px; border-radius:50%;
-      background:var(--play); color:#fff; border:0; cursor:pointer; display:grid; place-items:center;
-      box-shadow:0 8px 22px rgba(15,23,42,.25);
+      width:68px;height:68px;border-radius:50%; background:var(--play); color:#fff; border:0; cursor:pointer; display:grid; place-items:center;
+      box-shadow:0 6px 18px rgba(15,23,42,.22);
     }
-    .play svg{width:30px;height:30px; fill:#fff}
+    .play svg{width:26px;height:26px; fill:#fff}
 
-    /* Tempo unten links – dezent wie beim Vorbild */
-    .speed{
-      display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap; margin-top:4px;
-    }
+    /* Tempo: Pill-Gruppe; ultrakompakt auf XS als Dropdown */
+    .speed{display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:center; margin-top:4px}
     .speed .label{font-size:12px; color:var(--muted)}
-    .speed button{
-      border:1px solid var(--line); background:#eef2f6; color:#2f3640;
-      padding:6px 10px; border-radius:999px; font-size:12px; cursor:pointer;
-    }
-    .speed button.active{ border-color:#b7c2cf; box-shadow:0 0 0 1px #b7c2cf inset }
+    .speed .group{display:inline-flex; gap:6px; flex-wrap:wrap}
+    .speed button{border:1px solid var(--line);background:#eef2f6;color:#2f3640;padding:6px 10px;border-radius:999px;font-size:12px;cursor:pointer}
+    .speed button.active{border-color:#b7c2cf; box-shadow:0 0 0 1px #b7c2cf inset}
+    .speed select{display:none}
 
-    footer{
-      color:var(--muted); text-align:center; font-size:12px; margin-top:6px;
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    }
+    footer{color:#7d8590;text-align:center;font-size:12px;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
+    /* XS-Optimierung: wenn Bildschirm sehr schmal, Tempo als Dropdown anzeigen */
     @media (max-width:360px){
-      .play{width:70px;height:70px}
-      .skip{font-size:13px}
-      .lang button{padding:6px 10px}
+      .speed .group{display:none}
+      .speed select{display:inline-block;border:1px solid var(--line);background:#eef2f6;color:#2f3640;padding:6px 10px;border-radius:999px;font-size:12px}
+      .play{width:62px;height:62px}
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <header>
-      <h1 id="i-title">Audioguide der Ev. Stadtkirche von Hessisch Lichtenau</h1>
+    <!-- Kompakter Header -->
+    <div class="topbar">
+      <div class="title">Audioguide der Ev. Stadtkirche von Hessisch Lichtenau</div>
       <div class="lang" aria-label="Sprache / Language">
-        <button id="btn-de" class="active">🇩🇪 <span>DE</span></button>
-        <button id="btn-en">🇬🇧 <span>EN</span></button>
+        <button id="btn-de" class="active">🇩🇪 DE</button>
+        <button id="btn-en">🇬🇧 EN</button>
       </div>
-    </header>
+    </div>
 
+    <!-- Karte mit Player -->
     <section class="card">
       <img src="cover.jpeg" alt="Cover" class="cover" />
 
-      <div class="track-title" id="trackTitle">Audioguide</div>
-
-      <!-- schlanke Progress-Leiste -->
       <div class="scrub" aria-label="Wiedergabefortschritt">
         <div class="progress" id="progress">
           <div class="bar" id="bar"></div>
@@ -159,34 +113,35 @@
         <div class="times"><span id="cur">0:00</span><span id="dur">0:00</span></div>
       </div>
 
-      <!-- Controls im Audio-Cult-Stil -->
       <div class="controls">
-        <!-- Links: 15s zurück (Textbutton + kleiner Pfeil) -->
         <button id="back15" class="skip" aria-label="15 Sekunden zurück">
-          <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
-          <span>-15s</span>
+          <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg><span>-15s</span>
         </button>
 
-        <!-- Play / Pause (zentral, dunkel) -->
         <button id="btn-play" class="play" aria-label="Abspielen">
           <svg id="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7-11-7z"/></svg>
           <svg id="icon-pause" viewBox="0 0 24 24" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
         </button>
 
-        <!-- Rechts: 15s vor -->
         <button id="fwd15" class="skip" aria-label="15 Sekunden vor">
-          <span>+15s</span>
-          <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+          <span>+15s</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
         </button>
       </div>
 
-      <!-- Tempo -->
       <div class="speed" aria-label="Wiedergabegeschwindigkeit">
-        <span class="label" id="i-speed">Tempo</span>
-        <button data-rate="0.8">0.8×</button>
-        <button data-rate="1" class="active">1×</button>
-        <button data-rate="1.1">1.1×</button>
-        <button data-rate="1.25">1.25×</button>
+        <span class="label">Tempo</span>
+        <div class="group">
+          <button data-rate="0.8">0.8×</button>
+          <button data-rate="1" class="active">1×</button>
+          <button data-rate="1.1">1.1×</button>
+          <button data-rate="1.25">1.25×</button>
+        </div>
+        <select id="speedSelect" aria-label="Tempo auswählen">
+          <option value="0.8">0.8×</option>
+          <option value="1" selected>1×</option>
+          <option value="1.1">1.1×</option>
+          <option value="1.25">1.25×</option>
+        </select>
       </div>
     </section>
 
@@ -197,106 +152,64 @@
 
   <script>
     (()=> {
-      // Lokale Dateien
-      const files = {
-        de: "Audioguide Stadtkirche (deutsch).mp3",
-        en: "Audioguide Stadtkirche (englisch).mp3"
-      };
+      const files={de:"Audioguide Stadtkirche (deutsch).mp3",en:"Audioguide Stadtkirche (englisch).mp3"};
 
-      // Elemente
-      const audio   = document.getElementById("audio");
-      const btnPlay = document.getElementById("btn-play");
-      const iconPlay= document.getElementById("icon-play");
-      const iconPause=document.getElementById("icon-pause");
+      const audio=document.getElementById("audio"),
+            btnPlay=document.getElementById("btn-play"),
+            iconPlay=document.getElementById("icon-play"),
+            iconPause=document.getElementById("icon-pause"),
+            btnDe=document.getElementById("btn-de"),
+            btnEn=document.getElementById("btn-en"),
+            back15=document.getElementById("back15"),
+            fwd15=document.getElementById("fwd15"),
+            progress=document.getElementById("progress"),
+            bar=document.getElementById("bar"),
+            thumb=document.getElementById("thumb"),
+            cur=document.getElementById("cur"),
+            dur=document.getElementById("dur"),
+            speedBtns=[...document.querySelectorAll("[data-rate]")],
+            speedSelect=document.getElementById("speedSelect");
 
-      const btnDe   = document.getElementById("btn-de");
-      const btnEn   = document.getElementById("btn-en");
+      document.getElementById("year").textContent=new Date().getFullYear();
 
-      const back15  = document.getElementById("back15");
-      const fwd15   = document.getElementById("fwd15");
+      const fmt=s=>(isNaN(s)||!isFinite(s))?"0:00":`${Math.floor(s/60)}:${Math.floor(s%60).toString().padStart(2,"0")}`;
+      let lang=localStorage.getItem("hl-lang")||"de";
 
-      const progress= document.getElementById("progress");
-      const bar     = document.getElementById("bar");
-      const thumb   = document.getElementById("thumb");
-      const cur     = document.getElementById("cur");
-      const dur     = document.getElementById("dur");
+      function updatePlayIcon(p){iconPlay.style.display=p?"block":"none";iconPause.style.display=p?"none":"block";}
+      function updateProgressUI(){if(!audio.duration)return;const pct=(audio.currentTime/audio.duration)*100;bar.style.width=pct+"%";thumb.style.left=pct+"%";cur.textContent=fmt(audio.currentTime);dur.textContent=fmt(audio.duration);}
+      function setSource(){audio.src=(lang==="de")?files.de:files.en;bar.style.width="0%";thumb.style.left="0%";cur.textContent="0:00";dur.textContent="0:00";audio.load();}
+      async function startPlayback(){try{await audio.play();updatePlayIcon(false);}catch(e){updatePlayIcon(true);}}
+      function setLanguage(next){lang=next;localStorage.setItem("hl-lang",lang);btnDe.classList.toggle("active",lang==="de");btnEn.classList.toggle("active",lang==="en");setSource();startPlayback();}
 
-      const rateBtns= Array.from(document.querySelectorAll("[data-rate]"));
-      const trackTitle = document.getElementById("trackTitle");
-
-      document.getElementById("year").textContent = new Date().getFullYear();
-
-      // Helper
-      const fmt = s => (isNaN(s)||!isFinite(s)) ? "0:00" : `${Math.floor(s/60)}:${Math.floor(s%60).toString().padStart(2,"0")}`;
-      let lang = localStorage.getItem("hl-lang") || "de";
-
-      function updatePlayIcon(paused){
-        iconPlay.style.display = paused ? "block" : "none";
-        iconPause.style.display = paused ? "none" : "block";
-      }
-      function updateProgressUI(){
-        if(!audio.duration) return;
-        const pct = (audio.currentTime / audio.duration) * 100;
-        bar.style.width = pct + "%";
-        thumb.style.left = pct + "%";
-        cur.textContent = fmt(audio.currentTime);
-        dur.textContent = fmt(audio.duration);
-      }
-      function setSource(){
-        audio.src = (lang==="de") ? files.de : files.en;
-        trackTitle.textContent = (lang==="de") ? "Audioguide" : "Audio Guide";
-        bar.style.width="0%"; thumb.style.left="0%"; cur.textContent="0:00"; dur.textContent="0:00";
-        audio.load();
-      }
-      async function startPlayback(){
-        try{ await audio.play(); updatePlayIcon(false); } catch(e){ updatePlayIcon(true); }
-      }
-      function setLanguage(next){
-        lang = next; localStorage.setItem("hl-lang", lang);
-        btnDe.classList.toggle("active", lang==="de"); btnEn.classList.toggle("active", lang==="en");
-        setSource(); startPlayback(); // Autoplay nach Sprachwechsel
-      }
-
-      // Init
       setSource();
+      btnDe.onclick=()=>setLanguage("de"); btnEn.onclick=()=>setLanguage("en");
+      btnPlay.onclick=()=>audio.paused?startPlayback():(audio.pause(),updatePlayIcon(true));
+      back15.onclick=()=>{audio.currentTime=Math.max(0,audio.currentTime-15);updateProgressUI();};
+      fwd15.onclick=()=>{audio.currentTime=Math.min(audio.duration||audio.currentTime+15,audio.currentTime+15);updateProgressUI();};
+      audio.addEventListener("loadedmetadata",updateProgressUI);
+      audio.addEventListener("timeupdate",updateProgressUI);
+      audio.addEventListener("ended",()=>updatePlayIcon(true));
 
-      // Sprache
-      btnDe.addEventListener("click", ()=> setLanguage("de"));
-      btnEn.addEventListener("click", ()=> setLanguage("en"));
-
-      // Controls
-      btnPlay.addEventListener("click", ()=> audio.paused ? startPlayback() : (audio.pause(), updatePlayIcon(true)));
-      back15.addEventListener("click", ()=>{ audio.currentTime = Math.max(0, audio.currentTime - 15); updateProgressUI(); });
-      fwd15 .addEventListener("click", ()=>{ audio.currentTime = Math.min(audio.duration||audio.currentTime+15, audio.currentTime + 15); updateProgressUI(); });
-
-      // Audio Events
-      audio.addEventListener("loadedmetadata", updateProgressUI);
-      audio.addEventListener("timeupdate", updateProgressUI);
-      audio.addEventListener("ended", ()=> updatePlayIcon(true));
-
-      // Scrub / Seek (Tap & Drag)
+      // Scrub (Tap & Drag)
       let seeking=false;
-      function pctFromEvent(e){
-        const r = progress.getBoundingClientRect();
-        const x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
-        return Math.min(Math.max(0, x / r.width), 1);
-      }
-      function seekTo(p){ if(!audio.duration) return; audio.currentTime = p * audio.duration; updateProgressUI(); }
-      progress.addEventListener("mousedown", e=>{ seeking=true; seekTo(pctFromEvent(e)); });
-      progress.addEventListener("touchstart", e=>{ seeking=true; seekTo(pctFromEvent(e)); }, {passive:true});
-      window.addEventListener("mousemove", e=>{ if(seeking) seekTo(pctFromEvent(e)); });
-      window.addEventListener("touchmove", e=>{ if(seeking) seekTo(pctFromEvent(e)); }, {passive:true});
-      window.addEventListener("mouseup", ()=> seeking=false);
-      window.addEventListener("touchend", ()=> seeking=false);
+      function pctFromEvent(e){const r=progress.getBoundingClientRect();const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left;return Math.min(Math.max(0,x/r.width),1);}
+      function seekTo(p){if(!audio.duration)return;audio.currentTime=p*audio.duration;updateProgressUI();}
+      progress.addEventListener("mousedown",e=>{seeking=true;seekTo(pctFromEvent(e));});
+      progress.addEventListener("touchstart",e=>{seeking=true;seekTo(pctFromEvent(e));},{passive:true});
+      window.addEventListener("mousemove",e=>{if(seeking)seekTo(pctFromEvent(e));});
+      window.addEventListener("touchmove",e=>{if(seeking)seekTo(pctFromEvent(e));},{passive:true});
+      window.addEventListener("mouseup",()=>seeking=false);
+      window.addEventListener("touchend",()=>seeking=false);
 
-      // Geschwindigkeit (min 0.8x)
-      rateBtns.forEach(b=>{
-        b.addEventListener("click", ()=>{
-          rateBtns.forEach(x=>x.classList.remove("active"));
-          b.classList.add("active");
-          audio.playbackRate = Math.max(0.8, parseFloat(b.dataset.rate)||1);
-        });
-      });
+      // Tempo Buttons + Dropdown synchron halten
+      function setRate(r){
+        const rate=Math.max(0.8,parseFloat(r)||1);
+        audio.playbackRate=rate;
+        speedBtns.forEach(b=>b.classList.toggle("active",parseFloat(b.dataset.rate)===rate));
+        if(speedSelect) speedSelect.value=String(rate);
+      }
+      speedBtns.forEach(b=> b.onclick=()=> setRate(b.dataset.rate) );
+      if(speedSelect){ speedSelect.onchange=()=> setRate(speedSelect.value); }
     })();
   </script>
 </body>
