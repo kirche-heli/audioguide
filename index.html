@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <title>Audioguide Stadtkirche</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0a0a0a">
+  <style>
+    :root{ --bg:#0a0a0a; --fg:#f5f5f5; --muted:#9ca3af; --line:#1f2937; --accent:#3b82f6; }
+    @media (prefers-color-scheme:light){
+      :root{ --bg:#ffffff; --fg:#0a0a0a; --muted:#4b5563; --line:#e5e7eb; --accent:#2563eb; }
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,"Helvetica Neue",Arial;
+      background:var(--bg); color:var(--fg);
+      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    }
+    .wrap{max-width:640px;margin:0 auto;padding:16px 16px 24px;display:flex;flex-direction:column;gap:16px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    h1{font-size: clamp(18px,4.5vw,22px); margin:0}
+    .sub{color:var(--muted); font-size:13px}
+    .lang{display:inline-flex; border:1px solid var(--line); border-radius:999px; overflow:hidden}
+    .lang button{
+      padding:8px 12px; border:0; background:transparent; color:var(--muted); cursor:pointer; font-weight:600;
+      display:flex; align-items:center; gap:6px;
+    }
+    .lang button.active{ color:var(--fg); background:var(--line); }
+    .card{border:1px solid var(--line); border-radius:14px; padding:14px; display:flex; flex-direction:column; gap:12px}
+    .row{display:flex;align-items:center;gap:10px;justify-content:space-between}
+    .play{
+      width:64px;height:64px;border-radius:14px;border:0;cursor:pointer;background:var(--accent);color:white;display:grid;place-items:center;
+    }
+    .icon{width:26px;height:26px}
+    .pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:12px;padding:8px 10px}
+    .pill button{border:0;background:transparent;color:var(--fg);cursor:pointer;padding:6px 8px;border-radius:8px}
+    .pill button:hover{background:var(--line)}
+    .progress{width:100%;height:10px;border-radius:999px;background:var(--line);position:relative;cursor:pointer}
+    .bar{position:absolute;inset:0 0 0 auto;width:0%;background:var(--accent);border-radius:999px}
+    .times{display:flex;justify-content:space-between;color:var(--muted);font-size:12px}
+    footer{color:var(--muted);font-size:12px;text-align:center;margin-top:4px}
+    .hint{color:var(--muted); font-size:12px}
+    button,a{touch-action:manipulation}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1 id="i-title">Audioguide Stadtkirche</h1>
+        <div class="sub" id="i-sub">Evangelische Stadtkirche • Hessisch Lichtenau</div>
+      </div>
+      <div class="lang" role="tablist" aria-label="Sprache / Language">
+        <button id="btn-de" role="tab" aria-selected="true" class="active">🇩🇪 <span>DE</span></button>
+        <button id="btn-en" role="tab" aria-selected="false">🇬🇧 <span>EN</span></button>
+      </div>
+    </header>
+
+    <section class="card" aria-label="Player">
+      <div class="row">
+        <button id="btn-play" class="play" aria-label="Abspielen">
+          <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+            <path id="icon-play" d="M8 5v14l11-7-11-7z"/>
+            <path id="icon-pause" d="M6 5h4v14H6zM14 5h4v14h-4z" style="display:none"/>
+          </svg>
+        </button>
+
+        <div class="pill" aria-label="Navigation">
+          <button id="back15" aria-label="15 Sekunden zurück">⏪ 15s</button>
+          <button id="fwd30" aria-label="30 Sekunden vor">30s ⏩</button>
+        </div>
+
+        <div class="pill" aria-label="Wiedergabegeschwindigkeit">
+          <span id="i-speed">Tempo</span>
+          <button data-rate="0.8">0.8×</button>
+          <button data-rate="1" class="rate-active" style="font-weight:700;text-decoration:underline">1×</button>
+          <button data-rate="1.1">1.1×</button>
+          <button data-rate="1.25">1.25×</button>
+        </div>
+      </div>
+
+      <div class="progress" id="progress" aria-label="Fortschritt">
+        <div class="bar" id="bar"></div>
+      </div>
+      <div class="times">
+        <span id="cur">0:00</span>
+        <span id="dur">0:00</span>
+      </div>
+
+      <!-- Hinweis nur auf Deutsch sichtbar; EN bleibt leer -->
+      <div class="hint" id="i-hint">Tipp: Sprache oben wechseln. Die Seite merkt sich Ihre Auswahl.</div>
+    </section>
+
+    <footer>
+      © <span id="year"></span> <span id="i-foot">Evangelische Stadtkirche Hessisch Lichtenau · Audioguide</span>
+    </footer>
+  </div>
+
+  <audio id="audio" preload="metadata"></audio>
+
+  <script>
+    (()=> {
+      // Lokale Dateien im selben Ordner
+      const files = {
+        de: "Audioguide Stadtkirche (deutsch).mp3",
+        en: "Audioguide Stadtkirche (englisch).mp3"
+      };
+
+      // UI-Texte
+      const i18n = {
+        de: {
+          title: "Audioguide Stadtkirche",
+          sub: "Evangelische Stadtkirche • Hessisch Lichtenau",
+          speed: "Tempo",
+          hint: "Tipp: Sprache oben wechseln. Die Seite merkt sich Ihre Auswahl.",
+          foot: "Evangelische Stadtkirche Hessisch Lichtenau · Audioguide",
+          aria: { play:"Abspielen", pause:"Pause", back:"15 Sekunden zurück", fwd:"30 Sekunden vor", progress:"Fortschritt" }
+        },
+        en: {
+          title: "Town Church Audio Guide",
+          sub: "Evangelical Town Church • Hessisch Lichtenau",
+          speed: "Speed",
+          hint: "",
+          foot: "Evangelical Town Church Hessisch Lichtenau · Audio Guide",
+          aria: { play:"Play", pause:"Pause", back:"Back 15 seconds", fwd:"Forward 30 seconds", progress:"Progress" }
+        }
+      };
+
+      // Elemente
+      const audio   = document.getElementById("audio");
+      const btnPlay = document.getElementById("btn-play");
+      const iconPlay= document.getElementById("icon-play");
+      const iconPause=document.getElementById("icon-pause");
+      const bar     = document.getElementById("bar");
+      const progress= document.getElementById("progress");
+      const cur     = document.getElementById("cur");
+      const dur     = document.getElementById("dur");
+
+      const btnDe   = document.getElementById("btn-de");
+      const btnEn   = document.getElementById("btn-en");
+
+      const iTitle  = document.getElementById("i-title");
+      const iSub    = document.getElementById("i-sub");
+      const iSpeed  = document.getElementById("i-speed");
+      const iHint   = document.getElementById("i-hint");
+      const iFoot   = document.getElementById("i-foot");
+
+      const back15  = document.getElementById("back15");
+      const fwd30   = document.getElementById("fwd30");
+      const rateBtns= Array.from(document.querySelectorAll("[data-rate]"));
+
+      document.getElementById("year").textContent = new Date().getFullYear();
+
+      const fmt = s => {
+        if (isNaN(s) || !isFinite(s)) return "0:00";
+        const m = Math.floor(s/60), sec = Math.floor(s%60).toString().padStart(2,"0");
+        return `${m}:${sec}`;
+      };
+
+      const getLang = ()=>{
+        const q = new URL(location.href).searchParams.get("lang");
+        const s = (()=>{try{return localStorage.getItem("hl-lang")}catch(e){return null}})();
+        return (q==="de"||q==="en") ? q : (s||"de");
+      };
+
+      let lang = getLang();
+      const t = ()=> i18n[lang];
+
+      // Haptik
+      function vibrate(pattern){ if (navigator.vibrate) { try { navigator.vibrate(pattern); } catch(e){} } }
+      const haptic = {
+        tap: ()=> vibrate(10),
+        success: ()=> vibrate([12,40,18]),
+        pause: ()=> vibrate([8,40,8]),
+        skip: ()=> vibrate([6,40,10]),
+        seek: ()=> vibrate(5)
+      };
+
+      function applyI18n(){
+        const tr = t();
+        iTitle.textContent  = tr.title;
+        iSub.textContent    = tr.sub;
+        iSpeed.textContent  = tr.speed;
+        iHint.textContent   = tr.hint;
+        iFoot.textContent   = tr.foot;
+        back15.setAttribute("aria-label", tr.aria.back);
+        fwd30.setAttribute("aria-label", tr.aria.fwd);
+        progress.setAttribute("aria-label", tr.aria.progress);
+        btnPlay.setAttribute("aria-label", audio.paused ? tr.aria.play : tr.aria.pause);
+        document.documentElement.lang = lang;
+        document.title = tr.title;
+      }
+
+      function updatePlayIcon(paused){
+        if(paused){
+          iconPlay.style.display="block"; iconPause.style.display="none";
+          btnPlay.setAttribute("aria-label", t().aria.play);
+        }else{
+          iconPlay.style.display="none"; iconPause.style.display="block";
+          btnPlay.setAttribute("aria-label", t().aria.pause);
+        }
+      }
+
+      function setSource(){
+        audio.src = (lang==="de") ? files.de : files.en;
+        bar.style.width="0%"; cur.textContent="0:00"; dur.textContent="0:00";
+        audio.load();
+      }
+
+      async function startPlayback(){
+        try{
+          await audio.play();
+          updatePlayIcon(false);
+          haptic.success();
+        }catch(e){
+          updatePlayIcon(true);
+        }
+      }
+
+      function setLanguage(next, push=true){
+        lang = (next==="en") ? "en" : "de";
+        btnDe.classList.toggle("active", lang==="de");
+        btnEn.classList.toggle("active", lang==="en");
+        btnDe.setAttribute("aria-selected", lang==="de");
+        btnEn.setAttribute("aria-selected", lang==="en");
+
+        setSource();
+        applyI18n();
+
+        try{ localStorage.setItem("hl-lang", lang); }catch(e){}
+        if(push){
+          const u = new URL(location.href); u.searchParams.set("lang", lang);
+          history.replaceState(null,"",u.toString());
+        }
+
+        // Autoplay nach Sprachwechsel (durch Klick erlaubt)
+        startPlayback();
+      }
+
+      // Init
+      setSource();
+      applyI18n();
+
+      // Events
+      btnDe.addEventListener("click", ()=> { haptic.tap(); setLanguage("de"); });
+      btnEn.addEventListener("click", ()=> { haptic.tap(); setLanguage("en"); });
+
+      btnPlay.addEventListener("click", async ()=>{
+        if(audio.paused){ await startPlayback(); }
+        else { audio.pause(); updatePlayIcon(true); haptic.pause(); }
+      });
+
+      audio.addEventListener("loadedmetadata", ()=>{ dur.textContent = fmt(audio.duration); });
+      audio.addEventListener("timeupdate", ()=>{
+        if(audio.duration){
+          bar.style.width = (audio.currentTime / audio.duration * 100) + "%";
+          cur.textContent = fmt(audio.currentTime);
+          dur.textContent = fmt(audio.duration);
+        }
+      });
+      audio.addEventListener("ended", ()=> updatePlayIcon(true));
+
+      progress.addEventListener("click", (e)=>{
+        const r = progress.getBoundingClientRect();
+        const pct = Math.min(Math.max(0,(e.clientX - r.left)/r.width),1);
+        audio.currentTime = pct * (audio.duration || 0);
+        haptic.seek();
+      });
+
+      document.getElementById("back15").addEventListener("click", ()=>{
+        audio.currentTime = Math.max(0, audio.currentTime - 15);
+        haptic.skip();
+      });
+      document.getElementById("fwd30").addEventListener("click", ()=>{
+        audio.currentTime = Math.min(audio.duration || audio.currentTime+30, audio.currentTime + 30);
+        haptic.skip();
+      });
+
+      rateBtns.forEach(b=>{
+        b.addEventListener("click", ()=>{
+          rateBtns.forEach(x=>{ x.style.fontWeight="400"; x.style.textDecoration="none"; });
+          b.style.fontWeight="700"; b.style.textDecoration="underline";
+          const r = Math.max(0.8, parseFloat(b.dataset.rate)||1);
+          audio.playbackRate = r;
+          haptic.tap();
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
