@@ -4,175 +4,139 @@
   <meta charset="utf-8">
   <title>Audioguide der Ev. Stadtkirche von Hessisch Lichtenau</title>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#0a0a0a">
+  <meta name="theme-color" content="#0b0b0b">
+  <!-- Suchmaschinen ausschließen -->
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+  <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
   <style>
     :root{
-      --bg:#0a0a0a; --fg:#f5f5f5; --muted:#9ca3af; --line:#1f2937; --accent:#3b82f6;
-      --radius:14px; --pad:14px; --bottomSafe:calc(env(safe-area-inset-bottom,0px));
-      --bottomBarH:86px; /* Höhe der fixen Progress-Leiste */
+      --bg:#0b0b0b; --fg:#f6f6f6; --muted:#9aa0a6; --line:#1e293b; --accent:#1db954;
+      --pad:14px;
     }
     @media (prefers-color-scheme:light){
-      :root{ --bg:#ffffff; --fg:#0a0a0a; --muted:#4b5563; --line:#e5e7eb; --accent:#2563eb; }
+      :root{ --bg:#ffffff; --fg:#0a0a0a; --muted:#4b5563; --line:#e5e7eb; --accent:#1db954; }
     }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0; font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,"Helvetica Neue",Arial;
       background:var(--bg); color:var(--fg); -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
-      padding-bottom: calc(var(--bottomBarH) + var(--bottomSafe) + 8px); /* Platz für fixe Leiste */
     }
-    .wrap{max-width:640px;margin:0 auto;padding:var(--pad);display:flex;flex-direction:column;gap:12px}
-    header{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:48px}
-    h1{font-size: clamp(17px,4.2vw,21px); margin:0}
-    .sub{color:var(--muted); font-size:clamp(12px,3.2vw,13px); line-height:1.2}
-    /* Sprachauswahl – sehr kompakt und bruchsicher */
-    .lang{
-      display:inline-flex; border:1px solid var(--line); border-radius:999px; overflow:hidden; flex-shrink:0;
-      gap:0; background:transparent;
-    }
+    .wrap{max-width:720px;margin:0 auto;padding:var(--pad);display:flex;flex-direction:column;gap:14px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    h1{font-size: clamp(18px,4.4vw,22px); margin:0}
+
+    /* Sprache kompakt */
+    .lang{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;flex-shrink:0}
     .lang button{
-      padding:4px 8px; border:0; background:transparent; color:var(--muted);
-      cursor:pointer; font-weight:700; display:flex; align-items:center; gap:6px;
-      font-size:12px; line-height:1; min-width:auto;
+      padding:5px 10px;border:0;background:transparent;color:var(--muted);cursor:pointer;
+      font-weight:700;display:flex;align-items:center;gap:6px;font-size:12px;line-height:1;
     }
-    .lang button span{letter-spacing:.02em}
-    .lang button.active{ color:var(--fg); background:var(--line); }
-    .card{border:1px solid var(--line); border-radius:var(--radius); padding:12px; display:flex; flex-direction:column; gap:10px}
-    /* --- Controls --- */
-    .controls{
-      display:grid; grid-template-columns:auto 1fr; align-items:center; gap:8px; width:100%;
-    }
-    .play{
-      width:56px;height:56px;border-radius:12px;border:0;cursor:pointer;background:var(--accent);color:white;display:grid;place-items:center;
-      flex:0 0 auto;
-    }
-    .icon{width:24px;height:24px}
-    .nav{
-      justify-self:start;
-      display:inline-flex; gap:6px; border:1px solid var(--line); border-radius:12px; padding:6px;
-    }
-    .nav button{border:0;background:transparent;color:var(--fg);cursor:pointer;padding:6px 8px;border-radius:8px;font-weight:700;font-size:13px}
-    .nav button:hover{background:var(--line)}
+    .lang button.active{color:var(--fg);background:var(--line)}
 
-    .speed{
-      display:inline-flex; align-items:center; gap:6px; border:1px solid var(--line); border-radius:12px; padding:6px 8px; width:100%;
-      justify-content:flex-start;
+    /* Cover */
+    .cover{
+      width:100%; aspect-ratio:1/1; border-radius:18px; overflow:hidden; border:1px solid var(--line);
+      background:#111; display:block; object-fit:cover;
     }
-    .speed span{font-weight:800; font-size:13px; color:var(--fg)}
-    .speed button{border:0;background:transparent;color:var(--fg);cursor:pointer;padding:6px 8px;border-radius:8px;font-size:13px}
-    .speed button:hover{background:var(--line)}
 
-    /* --- Fixe Progress-Leiste unten --- */
-    .bottom{
-      position:fixed; left:0; right:0; bottom:0;
-      padding:10px 12px calc(10px + var(--bottomSafe));
-      background:rgba(20,20,20,.65);
-      backdrop-filter: blur(8px);
-      border-top:1px solid var(--line);
-      z-index:50;
-    }
-    @media (prefers-color-scheme:light){
-      .bottom{ background:rgba(255,255,255,.7) }
-    }
-    .progress{width:100%;height:12px;border-radius:999px;background:var(--line);position:relative;cursor:pointer}
+    /* Scrubber */
+    .scrub{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+    .progress{width:100%;height:12px;border-radius:999px;background:var(--line);position:relative;touch-action:none;cursor:pointer}
     .bar{position:absolute;left:0;top:0;height:100%;width:0%;background:var(--accent);border-radius:999px}
     .thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:var(--accent)}
-    .times{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin-top:6px}
+    .times{display:flex;justify-content:space-between;color:var(--muted);font-size:12px}
 
-    /* Copyright */
-    .copy{
-      text-align:center; font-size:12px; margin-top:6px; color:var(--muted); opacity:.7;
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    }
+    /* Controls im Spotify-Stil */
+    .controls{display:flex;align-items:center;justify-content:center;gap:24px;margin-top:6px}
+    .btn{border:0;background:transparent;color:var(--fg);cursor:pointer;display:grid;place-items:center}
+    .btn-skip{width:48px;height:48px;border-radius:50%;background:#111827;border:1px solid var(--line);font-weight:800}
+    .btn-skip svg{width:22px;height:22px}
+    .btn-skip span{font-size:12px;opacity:.9;margin-top:2px}
+    .btn-play{width:68px;height:68px;border-radius:50%;background:var(--accent);color:#000;box-shadow:0 6px 18px rgba(29,185,84,.25)}
+    .btn-play svg{width:28px;height:28px}
 
-    /* Extra kompakt auf sehr kleinen Geräten */
-    @media (max-width:360px){
-      .play{width:52px;height:52px}
-      .lang button{padding:4px 7px;font-size:11px}
-      .nav button,.speed button{padding:5px 6px;font-size:12px}
-      .speed span{font-size:12px}
-    }
+    /* Geschwindigkeit */
+    .speed{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .speed .label{font-weight:800;font-size:13px;color:var(--fg)}
+    .speed button{border:1px solid var(--line);background:transparent;color:var(--fg);padding:6px 10px;border-radius:12px;cursor:pointer;font-size:13px}
+    .speed button.active{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;font-weight:800}
+
+    footer{color:var(--muted);opacity:.6;text-align:center;font-size:12px;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
-      <div>
-        <h1 id="i-title">Audioguide der Ev. Stadtkirche von Hessisch Lichtenau</h1>
-        <div class="sub" id="i-sub">Evangelische Stadtkirche · Hessisch Lichtenau</div>
-      </div>
+      <h1 id="i-title">Audioguide der Ev. Stadtkirche von Hessisch Lichtenau</h1>
       <div class="lang" role="tablist" aria-label="Sprache / Language">
         <button id="btn-de" role="tab" aria-selected="true" class="active">🇩🇪 <span>DE</span></button>
         <button id="btn-en" role="tab" aria-selected="false">🇬🇧 <span>EN</span></button>
       </div>
     </header>
 
-    <section class="card" aria-label="Player">
-      <!-- Reihe 1: Play + Navigation -->
-      <div class="controls">
-        <button id="btn-play" class="play" aria-label="Abspielen">
-          <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
-            <path id="icon-play" d="M8 5v14l11-7-11-7z"/>
-            <path id="icon-pause" d="M6 5h4v14H6zM14 5h4v14h-4z" style="display:none"/>
-          </svg>
-        </button>
+    <img src="cover.jpeg" alt="Cover: Audioguide der Ev. Stadtkirche von Hessisch Lichtenau" class="cover" />
 
-        <div class="nav" aria-label="Navigation">
-          <button id="back15" aria-label="15 Sekunden zurück">⏪ 15s</button>
-          <button id="fwd30" aria-label="30 Sekunden vor">30s ⏩</button>
-        </div>
+    <!-- Scrubber über den Buttons -->
+    <div class="scrub" aria-label="Wiedergabefortschritt">
+      <div class="progress" id="progress">
+        <div class="bar" id="bar"></div>
+        <div class="thumb" id="thumb" style="left:0%"></div>
       </div>
-
-      <!-- Reihe 2: Tempo -->
-      <div class="speed" aria-label="Wiedergabegeschwindigkeit">
-        <span id="i-speed">Tempo</span>
-        <button data-rate="0.8">0.8×</button>
-        <button data-rate="1" class="rate-active" style="font-weight:800;text-decoration:underline">1×</button>
-        <button data-rate="1.1">1.1×</button>
-        <button data-rate="1.25">1.25×</button>
+      <div class="times">
+        <span id="cur">0:00</span>
+        <span id="dur">0:00</span>
       </div>
-    </section>
-  </div>
+    </div>
 
-  <!-- Fixe Progress-/Scrub-Leiste unten -->
-  <div class="bottom" aria-label="Wiedergabefortschritt">
-    <div class="progress" id="progress">
-      <div class="bar" id="bar"></div>
-      <div class="thumb" id="thumb" style="left:0%"></div>
+    <!-- Controls: LINKS = 15s zurück, RECHTS = 15s vor -->
+    <div class="controls" aria-label="Player controls">
+      <!-- LINKS: 15 Sekunden zurück (⏪) -->
+      <button id="back15" class="btn btn-skip" aria-label="15 Sekunden zurück" title="15s zurück">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <!-- doppelt nach links -->
+          <polygon points="11,12 19,6 19,18" />
+          <polygon points="5,12 13,6 13,18" />
+        </svg>
+        <span>15s</span>
+      </button>
+
+      <!-- MITTE: Play / Pause -->
+      <button id="btn-play" class="btn btn-play" aria-label="Abspielen">
+        <svg id="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7-11-7z"/></svg>
+        <svg id="icon-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+      </button>
+
+      <!-- RECHTS: 15 Sekunden vor (⏩) -->
+      <button id="fwd15" class="btn btn-skip" aria-label="15 Sekunden vor" title="15s vor">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <!-- doppelt nach rechts -->
+          <polygon points="13,12 5,6 5,18" />
+          <polygon points="19,12 11,6 11,18" />
+        </svg>
+        <span>15s</span>
+      </button>
     </div>
-    <div class="times">
-      <span id="cur">0:00</span>
-      <span id="dur">0:00</span>
+
+    <!-- Geschwindigkeit -->
+    <div class="speed" aria-label="Wiedergabegeschwindigkeit">
+      <span class="label" id="i-speed">Tempo</span>
+      <button data-rate="0.8">0.8×</button>
+      <button data-rate="1" class="active">1×</button>
+      <button data-rate="1.1">1.1×</button>
+      <button data-rate="1.25">1.25×</button>
     </div>
-    <div class="copy">© <span id="year"></span> Evangelische Stadtkirche Hessisch Lichtenau • Audioguide</div>
+
+    <footer>© <span id="year"></span> Evangelische Stadtkirche Hessisch Lichtenau • Audioguide</footer>
   </div>
 
   <audio id="audio" preload="metadata"></audio>
 
   <script>
     (()=> {
-      // Lokale Dateien im selben Ordner
       const files = {
         de: "Audioguide Stadtkirche (deutsch).mp3",
         en: "Audioguide Stadtkirche (englisch).mp3"
-      };
-
-      // UI-Texte
-      const i18n = {
-        de: {
-          title: "Audioguide der Ev. Stadtkirche von Hessisch Lichtenau",
-          sub: "Evangelische Stadtkirche · Hessisch Lichtenau",
-          speed: "Tempo",
-          foot: "Evangelische Stadtkirche Hessisch Lichtenau · Audioguide",
-          aria: { play:"Abspielen", pause:"Pause", back:"15 Sekunden zurück", fwd:"30 Sekunden vor" }
-        },
-        en: {
-          title: "Audio Guide of the Evangelical Town Church of Hessisch Lichtenau",
-          sub: "Evangelical Town Church · Hessisch Lichtenau",
-          speed: "Speed",
-          foot: "Evangelical Town Church Hessisch Lichtenau · Audio Guide",
-          aria: { play:"Play", pause:"Pause", back:"Back 15 seconds", fwd:"Forward 30 seconds" }
-        }
       };
 
       // Elemente
@@ -185,11 +149,10 @@
       const btnEn   = document.getElementById("btn-en");
 
       const iTitle  = document.getElementById("i-title");
-      const iSub    = document.getElementById("i-sub");
       const iSpeed  = document.getElementById("i-speed");
 
       const back15  = document.getElementById("back15");
-      const fwd30   = document.getElementById("fwd30");
+      const fwd15   = document.getElementById("fwd15");
       const rateBtns= Array.from(document.querySelectorAll("[data-rate]"));
 
       const progress= document.getElementById("progress");
@@ -197,46 +160,17 @@
       const thumb   = document.getElementById("thumb");
       const cur     = document.getElementById("cur");
       const dur     = document.getElementById("dur");
-
       document.getElementById("year").textContent = new Date().getFullYear();
 
-      const fmt = s => {
-        if (isNaN(s) || !isFinite(s)) return "0:00";
-        const m = Math.floor(s/60), sec = Math.floor(s%60).toString().padStart(2,"0");
-        return `${m}:${sec}`;
-      };
-
-      const getLang = ()=>{
-        const q = new URL(location.href).searchParams.get("lang");
-        const s = (()=>{try{return localStorage.getItem("hl-lang")}catch(e){return null}})();
-        return (q==="de"||q==="en") ? q : (s||"de");
-      };
-
+      // Utils
+      const fmt = s => (isNaN(s)||!isFinite(s)) ? "0:00" : `${Math.floor(s/60)}:${Math.floor(s%60).toString().padStart(2,"0")}`;
+      const getLang = ()=> localStorage.getItem("hl-lang") || "de";
       let lang = getLang();
-      const t = ()=> i18n[lang];
 
-      // Haptik
-      function vibrate(pattern){ if (navigator.vibrate) { try { navigator.vibrate(pattern); } catch(e){} } }
-      const haptic = {
-        tap: ()=> vibrate(10),
-        success: ()=> vibrate([12,40,18]),
-        pause: ()=> vibrate([8,40,8]),
-        skip: ()=> vibrate([6,40,10]),
-        seek: ()=> vibrate(5)
-      };
-
-      function applyI18n(){
-        const tr = t();
-        iTitle.textContent  = tr.title;
-        iSub.textContent    = tr.sub;
-        iSpeed.textContent  = tr.speed;
-        btnPlay.setAttribute("aria-label", audio.paused ? tr.aria.play : tr.aria.pause);
-        back15.setAttribute("aria-label", tr.aria.back);
-        fwd30.setAttribute("aria-label", tr.aria.fwd);
-        document.documentElement.lang = lang;
-        document.title = tr.title;
+      function updatePlayIcon(paused){
+        if(paused){ iconPlay.style.display="block"; iconPause.style.display="none"; }
+        else      { iconPlay.style.display="none";  iconPause.style.display="block"; }
       }
-
       function updateProgressUI(){
         if(!audio.duration) return;
         const pct = (audio.currentTime / audio.duration) * 100;
@@ -245,107 +179,60 @@
         cur.textContent = fmt(audio.currentTime);
         dur.textContent = fmt(audio.duration);
       }
-
-      function updatePlayIcon(paused){
-        if(paused){
-          iconPlay.style.display="block"; iconPause.style.display="none";
-          btnPlay.setAttribute("aria-label", t().aria.play);
-        }else{
-          iconPlay.style.display="none"; iconPause.style.display="block";
-          btnPlay.setAttribute("aria-label", t().aria.pause);
-        }
-      }
-
       function setSource(){
         audio.src = (lang==="de") ? files.de : files.en;
         bar.style.width="0%"; thumb.style.left="0%"; cur.textContent="0:00"; dur.textContent="0:00";
         audio.load();
       }
-
       async function startPlayback(){
-        try{
-          await audio.play();
-          updatePlayIcon(false);
-          haptic.success();
-        }catch(e){
-          updatePlayIcon(true);
-        }
+        try{ await audio.play(); updatePlayIcon(false); } catch(e){ updatePlayIcon(true); }
       }
-
-      function setLanguage(next, push=true){
-        lang = (next==="en") ? "en" : "de";
-        btnDe.classList.toggle("active", lang==="de");
-        btnEn.classList.toggle("active", lang==="en");
-        btnDe.setAttribute("aria-selected", lang==="de");
-        btnEn.setAttribute("aria-selected", lang==="en");
-
-        setSource();
-        applyI18n();
-
-        try{ localStorage.setItem("hl-lang", lang); }catch(e){}
-        if(push){
-          const u = new URL(location.href); u.searchParams.set("lang", lang);
-          history.replaceState(null,"",u.toString());
-        }
-        // Autoplay nach Sprachwechsel
-        startPlayback();
+      function setLanguage(next){
+        lang = next; localStorage.setItem("hl-lang", lang);
+        btnDe.classList.toggle("active", lang==="de"); btnEn.classList.toggle("active", lang==="en");
+        setSource(); startPlayback(); // Autoplay nach Sprachwechsel
       }
 
       // Init
       setSource();
-      applyI18n();
+      btnDe.addEventListener("click", ()=> setLanguage("de"));
+      btnEn.addEventListener("click", ()=> setLanguage("en"));
 
-      // Events
-      btnDe.addEventListener("click", ()=> { haptic.tap(); setLanguage("de"); });
-      btnEn.addEventListener("click", ()=> { haptic.tap(); setLanguage("en"); });
-
+      // Play/Pause
       btnPlay.addEventListener("click", async ()=>{
-        if(audio.paused){ await startPlayback(); }
-        else { audio.pause(); updatePlayIcon(true); haptic.pause(); }
+        if(audio.paused){ await startPlayback(); } else { audio.pause(); updatePlayIcon(true); }
       });
 
-      back15.addEventListener("click", ()=>{
-        audio.currentTime = Math.max(0, audio.currentTime - 15);
-        updateProgressUI(); haptic.skip();
-      });
-      fwd30.addEventListener("click", ()=>{
-        audio.currentTime = Math.min(audio.duration || audio.currentTime+30, audio.currentTime + 30);
-        updateProgressUI(); haptic.skip();
-      });
+      // Skip: 15s zurück / vor
+      back15.addEventListener("click", ()=>{ audio.currentTime = Math.max(0, audio.currentTime - 15); updateProgressUI(); });
+      fwd15.addEventListener("click", ()=>{ audio.currentTime = Math.min(audio.duration||audio.currentTime+15, audio.currentTime + 15); updateProgressUI(); });
 
-      audio.addEventListener("loadedmetadata", ()=> updateProgressUI());
-      audio.addEventListener("timeupdate", ()=> updateProgressUI());
+      // Audio Events
+      audio.addEventListener("loadedmetadata", updateProgressUI);
+      audio.addEventListener("timeupdate", updateProgressUI);
       audio.addEventListener("ended", ()=> updatePlayIcon(true));
 
-      // Scrub / Seek (Klick & Drag, Maus + Touch)
-      let seeking = false;
-
+      // Scrub / Seek (Tippen & Ziehen)
+      let seeking=false;
       function pctFromEvent(e){
         const r = progress.getBoundingClientRect();
-        const x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
-        return Math.min(Math.max(0, x / r.width), 1);
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        return Math.min(Math.max(0,(clientX - r.left)/r.width),1);
       }
-      function seekToPct(p){
-        if(!audio.duration) return;
-        audio.currentTime = p * audio.duration;
-        updateProgressUI();
-      }
+      function seekTo(p){ if(!audio.duration) return; audio.currentTime = p*audio.duration; updateProgressUI(); }
+      progress.addEventListener("mousedown", e=>{ seeking=true; seekTo(pctFromEvent(e)); });
+      progress.addEventListener("touchstart", e=>{ seeking=true; seekTo(pctFromEvent(e)); }, {passive:true});
+      window.addEventListener("mousemove", e=>{ if(seeking) seekTo(pctFromEvent(e)); });
+      window.addEventListener("touchmove", e=>{ if(seeking) seekTo(pctFromEvent(e)); }, {passive:true});
+      window.addEventListener("mouseup", ()=> seeking=false);
+      window.addEventListener("touchend", ()=> seeking=false);
 
-      progress.addEventListener("mousedown", e=>{ seeking=true; seekToPct(pctFromEvent(e)); haptic.seek(); });
-      progress.addEventListener("touchstart", e=>{ seeking=true; seekToPct(pctFromEvent(e)); haptic.seek(); }, {passive:true});
-      window.addEventListener("mousemove", e=>{ if(seeking){ seekToPct(pctFromEvent(e)); }});
-      window.addEventListener("touchmove", e=>{ if(seeking){ seekToPct(pctFromEvent(e)); }}, {passive:true});
-      window.addEventListener("mouseup",   ()=>{ if(seeking){ seeking=false; }});
-      window.addEventListener("touchend",  ()=>{ if(seeking){ seeking=false; }});
-
-      // Playback-Rate
+      // Geschwindigkeit
       rateBtns.forEach(b=>{
         b.addEventListener("click", ()=>{
-          rateBtns.forEach(x=>{ x.style.fontWeight="400"; x.style.textDecoration="none"; });
-          b.style.fontWeight="800"; b.style.textDecoration="underline";
-          const r = Math.max(0.8, parseFloat(b.dataset.rate)||1);
-          audio.playbackRate = r;
-          haptic.tap();
+          rateBtns.forEach(x=>x.classList.remove("active"));
+          b.classList.add("active");
+          audio.playbackRate = Math.max(0.8, parseFloat(b.dataset.rate)||1);
         });
       });
     })();
