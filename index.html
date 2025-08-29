@@ -21,86 +21,78 @@
     }
     .wrap{max-width:760px;margin:0 auto;padding:10px 12px 18px;display:flex;flex-direction:column;gap:10px}
 
-    /* ===== KOMPAKTER TOP-BAR (48px) ===== */
-    .topbar{
-      min-height:48px; display:flex; align-items:center; justify-content:space-between; gap:8px;
-    }
+    /* kompakte Topbar */
+    .topbar{min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:8px}
     .title{
-      font-size:14px; font-weight:400; color:var(--muted); letter-spacing:.01em;
-      /* statt Ellipsis: bis zu 2 harmonische Zeilen */
-      white-space:normal; overflow:hidden;
-      display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
-      text-wrap:balance;
-      margin-right:8px;
+      font-size:14px;font-weight:400;color:var(--muted);letter-spacing:.01em;
+      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;text-wrap:balance;overflow:hidden;margin-right:8px
     }
-    .lang{
-      display:inline-flex; border:1px solid var(--line); background:var(--pill);
-      border-radius:999px; overflow:hidden; flex-shrink:0;
-    }
+    .lang{display:inline-flex;border:1px solid var(--line);background:var(--pill);border-radius:999px;overflow:hidden;flex-shrink:0}
     .lang button{
-      border:0; background:transparent; color:var(--muted);
-      font-weight:600; font-size:12px; padding:6px 12px;
-      display:inline-flex; align-items:center; gap:8px; cursor:pointer;
-      line-height:1; /* Flag & Text exakt auf einer Linie */
-      white-space:nowrap; /* kein Umbruch im Button */
-      vertical-align:middle;
+      border:0;background:transparent;color:var(--muted);font-weight:600;font-size:12px;padding:6px 12px;
+      display:inline-flex;align-items:center;gap:8px;line-height:1;white-space:nowrap;cursor:pointer
     }
-    .lang button.active{color:var(--fg); background:#e9edf2}
+    .lang button.active{color:var(--fg);background:#e9edf2}
 
-    /* Karte kompakter */
+    /* Karte */
     .card{
-      background:var(--card); border:1px solid var(--line); border-radius:14px;
-      padding:10px; display:flex; flex-direction:column; gap:10px;
-    }
-    .cover{
-      width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:12px;
-      border:1px solid var(--line); background:#e6eaef;
+      background:var(--card);border:1px solid var(--line);border-radius:14px;
+      padding:10px;display:flex;flex-direction:column;gap:10px
     }
 
-    /* Progress dicht unter Cover */
-    .scrub{display:flex; flex-direction:column; gap:4px}
+    /* Cover: immer vollständig, quadratisch */
+    .cover-wrap{
+      position:relative; border-radius:12px; overflow:hidden; border:1px solid var(--line);
+      /* Platzersparnis: wir bleiben am Viewport orientiert, aber schneiden nichts ab */
+      width:100%; aspect-ratio:1/1; background:#e6eaef;
+    }
+    .cover{width:100%;height:100%;object-fit:cover;display:block}
+
+    /* Timeline als Overlay über dem Cover (spart Höhe, Bild bleibt voll sichtbar) */
+    .scrub-overlay{
+      position:absolute; left:0; right:0; bottom:0; padding:10px 10px 8px;
+      background:linear-gradient(180deg, rgba(241,243,245,0) 0%, rgba(246,247,249,.82) 40%, rgba(246,247,249,.95) 100%);
+      border-top:1px solid rgba(0,0,0,.05);
+    }
     .progress{
-      position:relative; width:100%; height:6px; border-radius:999px;
-      background:#e2e7ee; border:1px solid var(--line); cursor:pointer; touch-action:none;
+      position:relative;width:100%;height:6px;border-radius:999px;background:#e2e7ee;border:1px solid var(--line);
+      cursor:pointer;touch-action:none
     }
     .bar{position:absolute;left:0;top:0;height:100%;width:0%;background:var(--accent);border-radius:999px}
     .thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 5px rgba(15,23,42,.08)}
-    .times{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+    .times{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
 
-    /* Controls kompakt */
+    /* Controls */
     .controls{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin-top:2px}
-    .skip{
-      justify-self:center; display:inline-flex; align-items:center; gap:6px;
-      color:var(--muted); font-weight:600; font-size:14px; background:transparent; border:0; padding:6px 4px; cursor:pointer;
-    }
+    .skip{justify-self:center;display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-weight:600;font-size:14px;background:transparent;border:0;padding:6px 4px;cursor:pointer}
     .skip svg{width:16px;height:16px;opacity:.65;fill:currentColor}
-    .play{
-      width:68px;height:68px;border-radius:50%; background:var(--play); color:#fff; border:0; cursor:pointer; display:grid; place-items:center;
-      box-shadow:0 6px 18px rgba(15,23,42,.22);
-    }
-    .play svg{width:26px;height:26px; fill:#fff}
+    .play{width:66px;height:66px;border-radius:50%;background:var(--play);color:#fff;border:0;cursor:pointer;display:grid;place-items:center;box-shadow:0 6px 18px rgba(15,23,42,.22)}
+    .play svg{width:24px;height:24px;fill:#fff}
 
-    /* Tempo */
-    .speed{display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:center; margin-top:4px}
-    .speed .label{font-size:12px; color:var(--muted)}
-    .speed .group{display:inline-flex; gap:6px; flex-wrap:wrap}
+    /* Tempo – sichtbar im First View */
+    .speed{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+    .speed .label{font-size:12px;color:var(--muted)}
+    .speed .group{display:inline-flex;gap:6px;flex-wrap:wrap}
     .speed button{border:1px solid var(--line);background:#eef2f6;color:#2f3640;padding:6px 10px;border-radius:999px;font-size:12px;cursor:pointer}
-    .speed button.active{border-color:#b7c2cf; box-shadow:0 0 0 1px #b7c2cf inset}
+    .speed button.active{border-color:#b7c2cf;box-shadow:0 0 0 1px #b7c2cf inset}
     .speed select{display:none}
 
     footer{color:#7d8590;text-align:center;font-size:12px;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-    /* XS-Optimierung */
+    /* Höhe-abhängige Feinjustierung, ohne das Cover zu beschneiden */
+    @media (max-height:740px){
+      .play{width:60px;height:60px}
+      .skip{font-size:13px}
+      .scrub-overlay{padding:8px 8px 6px}
+    }
     @media (max-width:360px){
       .speed .group{display:none}
       .speed select{display:inline-block;border:1px solid var(--line);background:#eef2f6;color:#2f3640;padding:6px 10px;border-radius:999px;font-size:12px}
-      .play{width:62px;height:62px}
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <!-- Kompakter Header -->
     <div class="topbar">
       <div class="title">Audioguide der Ev. Stadtkirche von Hessisch Lichtenau</div>
       <div class="lang" aria-label="Sprache / Language">
@@ -109,33 +101,34 @@
       </div>
     </div>
 
-    <!-- Karte mit Player -->
     <section class="card">
-      <img src="cover.jpeg" alt="Cover" class="cover" />
-
-      <div class="scrub" aria-label="Wiedergabefortschritt">
-        <div class="progress" id="progress">
-          <div class="bar" id="bar"></div>
-          <div class="thumb" id="thumb" style="left:0%"></div>
+      <!-- Cover + Timeline-Overlay -->
+      <div class="cover-wrap">
+        <img src="cover.jpeg" alt="Cover" class="cover" />
+        <div class="scrub-overlay" aria-label="Wiedergabefortschritt">
+          <div class="progress" id="progress">
+            <div class="bar" id="bar"></div>
+            <div class="thumb" id="thumb" style="left:0%"></div>
+          </div>
+          <div class="times"><span id="cur">0:00</span><span id="dur">0:00</span></div>
         </div>
-        <div class="times"><span id="cur">0:00</span><span id="dur">0:00</span></div>
       </div>
 
+      <!-- Controls -->
       <div class="controls">
         <button id="back15" class="skip" aria-label="15 Sekunden zurück">
           <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg><span>-15s</span>
         </button>
-
         <button id="btn-play" class="play" aria-label="Abspielen">
           <svg id="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7-11-7z"/></svg>
           <svg id="icon-pause" viewBox="0 0 24 24" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
         </button>
-
         <button id="fwd15" class="skip" aria-label="15 Sekunden vor">
           <span>+15s</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
         </button>
       </div>
 
+      <!-- Tempo (sichtbar im First View) -->
       <div class="speed" aria-label="Wiedergabegeschwindigkeit">
         <span class="label">Tempo</span>
         <div class="group">
@@ -209,7 +202,7 @@
       window.addEventListener("mouseup",()=>seeking=false);
       window.addEventListener("touchend",()=>seeking=false);
 
-      // Geschwindigkeit (Buttons & Dropdown synchron)
+      // Geschwindigkeit
       function setRate(r){const rate=Math.max(0.8,parseFloat(r)||1);audio.playbackRate=rate;speedBtns.forEach(b=>b.classList.toggle("active",parseFloat(b.dataset.rate)===rate));if(speedSelect) speedSelect.value=String(rate);}
       speedBtns.forEach(b=> b.onclick=()=> setRate(b.dataset.rate) );
       if(speedSelect){ speedSelect.onchange=()=> setRate(speedSelect.value); }
