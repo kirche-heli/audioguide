@@ -6,7 +6,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0a0a0a">
   <style>
-    :root{ --bg:#0a0a0a; --fg:#f5f5f5; --muted:#9ca3af; --line:#1f2937; --accent:#3b82f6; }
+    :root{
+      --bg:#0a0a0a; --fg:#f5f5f5; --muted:#9ca3af; --line:#1f2937; --accent:#3b82f6;
+      --radius:14px;
+    }
     @media (prefers-color-scheme:light){
       :root{ --bg:#ffffff; --fg:#0a0a0a; --muted:#4b5563; --line:#e5e7eb; --accent:#2563eb; }
     }
@@ -14,34 +17,60 @@
     html,body{height:100%}
     body{
       margin:0; font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,"Helvetica Neue",Arial;
-      background:var(--bg); color:var(--fg);
-      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+      background:var(--bg); color:var(--fg); -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
     }
-    .wrap{max-width:640px;margin:0 auto;padding:16px 16px 24px;display:flex;flex-direction:column;gap:16px}
-    header{display:flex;align-items:center;justify-content:space-between;gap:10px}
-    h1{font-size: clamp(18px,4.5vw,22px); margin:0}
-    .sub{color:var(--muted); font-size:13px}
-    .lang{display:inline-flex; border:1px solid var(--line); border-radius:999px; overflow:hidden}
+    .wrap{max-width:640px;margin:0 auto;padding:14px 14px 20px;display:flex;flex-direction:column;gap:12px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    h1{font-size: clamp(18px,4.3vw,22px); margin:0}
+    .sub{color:var(--muted); font-size:clamp(12px,3.3vw,13px); line-height:1.2}
+    .lang{
+      display:inline-flex; border:1px solid var(--line); border-radius:999px; overflow:hidden;
+      gap:0;
+    }
     .lang button{
-      padding:8px 12px; border:0; background:transparent; color:var(--muted); cursor:pointer; font-weight:600;
-      display:flex; align-items:center; gap:6px;
+      padding:6px 10px; border:0; background:transparent; color:var(--muted);
+      cursor:pointer; font-weight:600; display:flex; align-items:center; gap:6px;
+      font-size:13px; line-height:1;
     }
     .lang button.active{ color:var(--fg); background:var(--line); }
-    .card{border:1px solid var(--line); border-radius:14px; padding:14px; display:flex; flex-direction:column; gap:12px}
-    .row{display:flex;align-items:center;gap:10px;justify-content:space-between}
-    .play{
-      width:64px;height:64px;border-radius:14px;border:0;cursor:pointer;background:var(--accent);color:white;display:grid;place-items:center;
+    .card{border:1px solid var(--line); border-radius:var(--radius); padding:12px; display:flex; flex-direction:column; gap:10px}
+    .row{display:flex;align-items:center;gap:8px;justify-content:space-between; flex-wrap:wrap}
+    /* --- Controls row 1 --- */
+    .controls{
+      display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:8px; width:100%;
     }
-    .icon{width:26px;height:26px}
-    .pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:12px;padding:8px 10px}
-    .pill button{border:0;background:transparent;color:var(--fg);cursor:pointer;padding:6px 8px;border-radius:8px}
-    .pill button:hover{background:var(--line)}
+    .play{
+      width:58px;height:58px;border-radius:12px;border:0;cursor:pointer;background:var(--accent);color:white;display:grid;place-items:center;
+      flex:0 0 auto;
+    }
+    .icon{width:24px;height:24px}
+    .nav{
+      display:inline-flex; gap:6px; border:1px solid var(--line); border-radius:12px; padding:6px; justify-self:start;
+    }
+    .nav button{border:0;background:transparent;color:var(--fg);cursor:pointer;padding:6px 8px;border-radius:8px;font-weight:600;font-size:13px}
+    .nav button:hover{background:var(--line)}
+    /* --- Controls row 2 (speed) --- */
+    .speed{
+      display:inline-flex; align-items:center; gap:6px; border:1px solid var(--line); border-radius:12px; padding:6px 8px; width:100%;
+      justify-content:flex-start;
+    }
+    .speed span{font-weight:700; font-size:13px; color:var(--fg)}
+    .speed button{border:0;background:transparent;color:var(--fg);cursor:pointer;padding:6px 8px;border-radius:8px;font-size:13px}
+    .speed button:hover{background:var(--line)}
     .progress{width:100%;height:10px;border-radius:999px;background:var(--line);position:relative;cursor:pointer}
     .bar{position:absolute;inset:0 0 0 auto;width:0%;background:var(--accent);border-radius:999px}
     .times{display:flex;justify-content:space-between;color:var(--muted);font-size:12px}
-    footer{color:var(--muted);font-size:12px;text-align:center;margin-top:4px}
+    footer{color:var(--muted);font-size:12px;text-align:center;margin-top:2px}
     .hint{color:var(--muted); font-size:12px}
     button,a{touch-action:manipulation}
+
+    /* Extra kompakt auf sehr kleinen Geräten */
+    @media (max-width:360px){
+      .play{width:54px;height:54px}
+      .lang button{padding:5px 8px;font-size:12px}
+      .nav button,.speed button{padding:5px 6px;font-size:12px}
+      .speed span{font-size:12px}
+    }
   </style>
 </head>
 <body>
@@ -49,7 +78,7 @@
     <header>
       <div>
         <h1 id="i-title">Audioguide Stadtkirche</h1>
-        <div class="sub" id="i-sub">Evangelische Stadtkirche • Hessisch Lichtenau</div>
+        <div class="sub" id="i-sub">Evangelische Stadtkirche · Hessisch Lichtenau</div>
       </div>
       <div class="lang" role="tablist" aria-label="Sprache / Language">
         <button id="btn-de" role="tab" aria-selected="true" class="active">🇩🇪 <span>DE</span></button>
@@ -58,7 +87,8 @@
     </header>
 
     <section class="card" aria-label="Player">
-      <div class="row">
+      <!-- Reihe 1: Play + Navigation -->
+      <div class="controls">
         <button id="btn-play" class="play" aria-label="Abspielen">
           <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
             <path id="icon-play" d="M8 5v14l11-7-11-7z"/>
@@ -66,18 +96,22 @@
           </svg>
         </button>
 
-        <div class="pill" aria-label="Navigation">
+        <div class="nav" aria-label="Navigation">
           <button id="back15" aria-label="15 Sekunden zurück">⏪ 15s</button>
           <button id="fwd30" aria-label="30 Sekunden vor">30s ⏩</button>
         </div>
 
-        <div class="pill" aria-label="Wiedergabegeschwindigkeit">
-          <span id="i-speed">Tempo</span>
-          <button data-rate="0.8">0.8×</button>
-          <button data-rate="1" class="rate-active" style="font-weight:700;text-decoration:underline">1×</button>
-          <button data-rate="1.1">1.1×</button>
-          <button data-rate="1.25">1.25×</button>
-        </div>
+        <!-- Platzhalter rechts, damit Grid auf einer Linie bleibt -->
+        <div style="width:1px;"></div>
+      </div>
+
+      <!-- Reihe 2: Tempo -->
+      <div class="speed" aria-label="Wiedergabegeschwindigkeit">
+        <span id="i-speed">Tempo</span>
+        <button data-rate="0.8">0.8×</button>
+        <button data-rate="1" class="rate-active" style="font-weight:700;text-decoration:underline">1×</button>
+        <button data-rate="1.1">1.1×</button>
+        <button data-rate="1.25">1.25×</button>
       </div>
 
       <div class="progress" id="progress" aria-label="Fortschritt">
@@ -111,7 +145,7 @@
       const i18n = {
         de: {
           title: "Audioguide Stadtkirche",
-          sub: "Evangelische Stadtkirche • Hessisch Lichtenau",
+          sub: "Evangelische Stadtkirche · Hessisch Lichtenau",
           speed: "Tempo",
           hint: "Tipp: Sprache oben wechseln. Die Seite merkt sich Ihre Auswahl.",
           foot: "Evangelische Stadtkirche Hessisch Lichtenau · Audioguide",
@@ -119,7 +153,7 @@
         },
         en: {
           title: "Town Church Audio Guide",
-          sub: "Evangelical Town Church • Hessisch Lichtenau",
+          sub: "Evangelical Town Church · Hessisch Lichtenau",
           speed: "Speed",
           hint: "",
           foot: "Evangelical Town Church Hessisch Lichtenau · Audio Guide",
@@ -268,11 +302,11 @@
         haptic.seek();
       });
 
-      document.getElementById("back15").addEventListener("click", ()=>{
+      back15.addEventListener("click", ()=>{
         audio.currentTime = Math.max(0, audio.currentTime - 15);
         haptic.skip();
       });
-      document.getElementById("fwd30").addEventListener("click", ()=>{
+      fwd30.addEventListener("click", ()=>{
         audio.currentTime = Math.min(audio.duration || audio.currentTime+30, audio.currentTime + 30);
         haptic.skip();
       });
