@@ -14,6 +14,7 @@
       --play:#0f172a; --accent:#0f172a; --pill:#eceff3;
     }
     *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0; background:var(--bg); color:var(--fg);
       font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;
@@ -21,7 +22,7 @@
     }
     .wrap{max-width:760px;margin:0 auto;padding:10px 12px 18px;display:flex;flex-direction:column;gap:10px}
 
-    /* kompakte Topbar */
+    /* Topbar */
     .topbar{min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:8px}
     .title{
       font-size:14px;font-weight:400;color:var(--muted);letter-spacing:.01em;
@@ -40,15 +41,14 @@
       padding:10px;display:flex;flex-direction:column;gap:10px
     }
 
-    /* Cover: immer vollständig, quadratisch */
+    /* Cover: quadratisch, voll sichtbar */
     .cover-wrap{
       position:relative; border-radius:12px; overflow:hidden; border:1px solid var(--line);
-      /* Platzersparnis: wir bleiben am Viewport orientiert, aber schneiden nichts ab */
       width:100%; aspect-ratio:1/1; background:#e6eaef;
     }
     .cover{width:100%;height:100%;object-fit:cover;display:block}
 
-    /* Timeline als Overlay über dem Cover (spart Höhe, Bild bleibt voll sichtbar) */
+    /* Timeline-Overlay am unteren Rand des Covers */
     .scrub-overlay{
       position:absolute; left:0; right:0; bottom:0; padding:10px 10px 8px;
       background:linear-gradient(180deg, rgba(241,243,245,0) 0%, rgba(246,247,249,.82) 40%, rgba(246,247,249,.95) 100%);
@@ -69,7 +69,7 @@
     .play{width:66px;height:66px;border-radius:50%;background:var(--play);color:#fff;border:0;cursor:pointer;display:grid;place-items:center;box-shadow:0 6px 18px rgba(15,23,42,.22)}
     .play svg{width:24px;height:24px;fill:#fff}
 
-    /* Tempo – sichtbar im First View */
+    /* Tempo */
     .speed{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:6px}
     .speed .label{font-size:12px;color:var(--muted)}
     .speed .group{display:inline-flex;gap:6px;flex-wrap:wrap}
@@ -77,9 +77,13 @@
     .speed button.active{border-color:#b7c2cf;box-shadow:0 0 0 1px #b7c2cf inset}
     .speed select{display:none}
 
+    /* Footer + dezente Links */
     footer{color:#7d8590;text-align:center;font-size:12px;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .legal-link{display:inline-block;color:#7d8590;text-decoration:underline dotted 1px;cursor:pointer}
+    footer a{color:#7d8590;text-decoration:none}
+    footer a:hover{text-decoration:underline;color:#2b3035}
 
-    /* Höhe-abhängige Feinjustierung, ohne das Cover zu beschneiden */
+    /* Höhe-abhängige Feinjustierung */
     @media (max-height:740px){
       .play{width:60px;height:60px}
       .skip{font-size:13px}
@@ -89,6 +93,30 @@
       .speed .group{display:none}
       .speed select{display:inline-block;border:1px solid var(--line);background:#eef2f6;color:#2f3640;padding:6px 10px;border-radius:999px;font-size:12px}
     }
+
+    /* === Legal Modal === */
+    .modal{
+      position:fixed; inset:0; background:rgba(0,0,0,.42);
+      display:none; align-items:center; justify-content:center; z-index:9999;
+    }
+    .modal[open]{display:flex}
+    .modal-card{
+      width:min(780px,92vw); max-height:86vh; background:#fff; color:#1f2530;
+      border-radius:14px; box-shadow:0 20px 60px rgba(0,0,0,.25); overflow:hidden;
+      border:1px solid #e7ecf2; display:flex; flex-direction:column;
+    }
+    .modal-head{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:14px 16px; background:#f6f7f9; border-bottom:1px solid #e7ecf2;
+    }
+    .modal-head h3{margin:0; font-size:16px; font-weight:700; color:#303640}
+    .modal-close{border:0;background:#eaeef3;border-radius:10px;padding:8px 10px;cursor:pointer}
+    .modal-body{
+      padding:14px 16px; overflow:auto; line-height:1.55; font-size:14px;
+    }
+    .modal-body h4{margin:16px 0 6px; font-size:15px; color:#2b3035}
+    .modal-body p, .modal-body li{color:#3a4149}
+    .modal-body small{color:#667085}
   </style>
 </head>
 <body>
@@ -128,9 +156,9 @@
         </button>
       </div>
 
-      <!-- Tempo (sichtbar im First View) -->
+      <!-- Tempo -->
       <div class="speed" aria-label="Wiedergabegeschwindigkeit">
-        <span class="label">Tempo</span>
+        <span class="label" id="i-speed">Tempo</span>
         <div class="group">
           <button data-rate="0.8">0.8×</button>
           <button data-rate="1" class="active">1×</button>
@@ -146,10 +174,90 @@
       </div>
     </section>
 
-    <footer>© <span id="year"></span> Evangelische Stadtkirche Hessisch Lichtenau • Audioguide</footer>
+    <footer>
+      © <span id="year"></span> Evangelische Stadtkirche Hessisch Lichtenau • Audioguide
+      · <a class="legal-link" id="openLegal">Impressum & Datenschutz</a><br>
+      <small>Intro/Outro-Musik: Track „London“ · Musik von 
+        <a href="https://www.fiftysounds.com" target="_blank" rel="noopener">fiftysounds.com</a>
+      </small>
+    </footer>
   </div>
 
   <audio id="audio" preload="metadata"></audio>
+
+  <!-- Modal: Impressum & Datenschutz -->
+  <div class="modal" id="legalModal" aria-hidden="true" aria-labelledby="legalTitle" role="dialog">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 id="legalTitle">Impressum & Datenschutz</h3>
+        <button class="modal-close" id="closeLegal" aria-label="Schließen">✕</button>
+      </div>
+      <div class="modal-body">
+        <h4>Impressum</h4>
+        <p><strong>Ev. Kirchengemeinde Hessisch Lichtenau</strong><br>
+           Mühlweg&nbsp;21 · 37235 Hessisch Lichtenau<br>
+           Telefon: 05602&nbsp;–&nbsp;2403 ·
+           E-Mail: <a href="mailto:hessischlichtenau.gemeindebuero@ekkw.de">hessischlichtenau.gemeindebuero@ekkw.de</a></p>
+        <p>Die Ev. Kirchengemeinde Hessisch Lichtenau ist eine Körperschaft des öffentlichen Rechts.
+           Vertretungsberechtigt ist der Vorstand der Kirchengemeinde.</p>
+        <p><strong>Verantwortlich nach §&nbsp;18&nbsp;MStV:</strong><br>
+           Pfarrerin Anja Peters, Mühlweg&nbsp;21, 37235 Hessisch Lichtenau</p>
+
+        <h4>Rechtliche Hinweise</h4>
+        <p>Alle Inhalte dieser Seite wurden mit größter Sorgfalt erstellt; für Aktualität, Vollständigkeit
+           und Richtigkeit wird keine Gewähr übernommen. Wir behalten uns vor, Inhalte ohne Ankündigung
+           zu ändern oder zu entfernen. Externe Links werden beim Setzen geprüft; für deren aktuelle Inhalte
+           sind ausschließlich die jeweiligen Anbieter verantwortlich. Hinweise auf Rechtsverstöße nehmen
+           wir unter der oben genannten Adresse entgegen und prüfen umgehend.</p>
+
+        <h4>Datenschutz</h4>
+        <p>Diese Seite informiert über einen Audioguide und stellt ihn zum Abspielen bereit. Es werden
+           <strong>keine Tracking-Dienste</strong> eingesetzt, keine Analyse-Profile erstellt und keine
+           personenbezogenen Daten an Dritte übermittelt.</p>
+
+        <h4>Verantwortlicher</h4>
+        <p>Ev. Kirchengemeinde Hessisch Lichtenau, Mühlweg&nbsp;21, 37235 Hessisch Lichtenau
+           (Kontaktdaten siehe Impressum).</p>
+
+        <h4>Server-Protokolle</h4>
+        <p>Der Hosting-Provider kann beim Aufruf der Seite technisch notwendige Zugriffsdaten in
+           sogenannten Server-Logfiles verarbeiten (z. B. aufgerufene URL, Datum/Uhrzeit, übertragene Datenmenge,
+           Referrer, Browser/OS, IP-Adresse). Die Verarbeitung dient der Sicherstellung des technischen
+           Betriebs und der Abwehr von Angriffen und wird regelmäßig kurzfristig gelöscht, sofern keine
+           sicherheitsrelevante Auswertung erforderlich ist.</p>
+
+        <h4>Lokale Speicherung</h4>
+        <p>Zur komfortablen Nutzung speichert die Seite Einstellungen (gewählte Sprache und Wiedergabegeschwindigkeit)
+           lokal im Browser (<em>localStorage</em>). Diese Werte verlassen Ihr Endgerät nicht und können Sie jederzeit
+           löschen, indem Sie die Website-Daten in Ihrem Browser entfernen.</p>
+
+        <h4>Cookies</h4>
+        <p>Diese Seite setzt <strong>keine</strong> eigenen Cookies. Etwaige Cookies des Hosters oder des
+           Browsers sind rein technisch erforderlich.</p>
+
+        <h4>Kontakt</h4>
+        <p>Wenn Sie uns per E-Mail kontaktieren, verarbeiten wir Ihre Angaben zur Bearbeitung der Anfrage.
+           Rechtsgrundlage ist unser berechtigtes Interesse an der Beantwortung (Art.&nbsp;6&nbsp;Abs.&nbsp;1&nbsp;lit.&nbsp;f&nbsp;DSGVO)
+           bzw. Ihre Einwilligung, sofern erteilt.</p>
+
+        <h4>Ihre Rechte</h4>
+        <p>Sie haben nach der DSGVO das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung,
+           Widerspruch sowie auf Datenübertragbarkeit. Zudem besteht ein Beschwerderecht bei einer
+           Datenschutzaufsichtsbehörde. Bitte wenden Sie sich hierzu an die oben genannten Kontaktdaten.</p>
+
+        <h4>Urheberrecht</h4>
+        <p>Texte, Bilder und Audiodateien dieser Seite sind urheberrechtlich geschützt.
+           Jede weitergehende Nutzung bedarf unserer vorherigen Zustimmung.</p>
+
+        <h4>Musiknachweis</h4>
+        <p>Intro/Outro-Musik: Track „London“ · Musik von 
+           <a href="https://www.fiftysounds.com" target="_blank" rel="noopener">www.fiftysounds.com</a>.
+           Nutzung gemäß FiftySounds License (Attribution erforderlich).</p>
+
+        <p><small>Stand: <span id="legalDate"></span></small></p>
+      </div>
+    </div>
+  </div>
 
   <script>
     (()=> {
@@ -176,25 +284,53 @@
       const fmt=s=>(isNaN(s)||!isFinite(s))?"0:00":`${Math.floor(s/60)}:${Math.floor(s%60).toString().padStart(2,"0")}`;
       let lang=localStorage.getItem("hl-lang")||"de";
 
+      function vibrate(ms){ if(navigator.vibrate) try{ navigator.vibrate(ms); }catch(e){} }
+
       function updatePlayIcon(p){iconPlay.style.display=p?"block":"none";iconPause.style.display=p?"none":"block";}
-      function updateProgressUI(){if(!audio.duration)return;const pct=(audio.currentTime/audio.duration)*100;bar.style.width=pct+"%";thumb.style.left=pct+"%";cur.textContent=fmt(audio.currentTime);dur.textContent=fmt(audio.duration);}
-      function setSource(){audio.src=(lang==="de")?files.de:files.en;bar.style.width="0%";thumb.style.left="0%";cur.textContent="0:00";dur.textContent="0:00";audio.load();}
-      async function startPlayback(){try{await audio.play();updatePlayIcon(false);}catch(e){updatePlayIcon(true);}}
-      function setLanguage(next){lang=next;localStorage.setItem("hl-lang",lang);btnDe.classList.toggle("active",lang==="de");btnEn.classList.toggle("active",lang==="en");setSource();startPlayback();}
+      function updateProgressUI(){
+        if(!audio.duration) return;
+        const pct=(audio.currentTime/audio.duration)*100;
+        bar.style.width=pct+"%";
+        thumb.style.left=pct+"%";
+        cur.textContent=fmt(audio.currentTime);
+        dur.textContent=fmt(audio.duration);
+      }
+      function setSource(){
+        audio.src=(lang==="de")?files.de:files.en;
+        bar.style.width="0%"; thumb.style.left="0%";
+        cur.textContent="0:00"; dur.textContent="0:00";
+        audio.load();
+      }
+      async function startPlayback(){
+        try{ await audio.play(); updatePlayIcon(false); vibrate(10); }
+        catch(e){ updatePlayIcon(true); }
+      }
+      function setLanguage(next){
+        lang=next; localStorage.setItem("hl-lang",lang);
+        btnDe.classList.toggle("active",lang==="de"); btnEn.classList.toggle("active",lang==="en");
+        setSource(); startPlayback(); // Autoplay nach Sprachwechsel
+      }
 
       setSource();
-      btnDe.onclick=()=>setLanguage("de"); btnEn.onclick=()=>setLanguage("en");
-      btnPlay.onclick=()=>audio.paused?startPlayback():(audio.pause(),updatePlayIcon(true));
-      back15.onclick=()=>{audio.currentTime=Math.max(0,audio.currentTime-15);updateProgressUI();};
-      fwd15.onclick=()=>{audio.currentTime=Math.min(audio.duration||audio.currentTime+15,audio.currentTime+15);updateProgressUI();};
+      btnDe.onclick=()=>setLanguage("de");
+      btnEn.onclick=()=>setLanguage("en");
+
+      btnPlay.onclick=()=>{ if(audio.paused){ startPlayback(); } else { audio.pause(); updatePlayIcon(true); vibrate(6); } };
+      back15.onclick=()=>{ audio.currentTime=Math.max(0,audio.currentTime-15); updateProgressUI(); vibrate(6); };
+      fwd15.onclick =()=>{ audio.currentTime=Math.min(audio.duration||audio.currentTime+15,audio.currentTime+15); updateProgressUI(); vibrate(6); };
+
       audio.addEventListener("loadedmetadata",updateProgressUI);
       audio.addEventListener("timeupdate",updateProgressUI);
       audio.addEventListener("ended",()=>updatePlayIcon(true));
 
       // Scrub (Tap & Drag)
       let seeking=false;
-      function pctFromEvent(e){const r=progress.getBoundingClientRect();const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left;return Math.min(Math.max(0,x/r.width),1);}
-      function seekTo(p){if(!audio.duration)return;audio.currentTime=p*audio.duration;updateProgressUI();}
+      function pctFromEvent(e){
+        const r=progress.getBoundingClientRect();
+        const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left;
+        return Math.min(Math.max(0,x/r.width),1);
+      }
+      function seekTo(p){ if(!audio.duration) return; audio.currentTime=p*audio.duration; updateProgressUI(); }
       progress.addEventListener("mousedown",e=>{seeking=true;seekTo(pctFromEvent(e));});
       progress.addEventListener("touchstart",e=>{seeking=true;seekTo(pctFromEvent(e));},{passive:true});
       window.addEventListener("mousemove",e=>{if(seeking)seekTo(pctFromEvent(e));});
@@ -203,9 +339,30 @@
       window.addEventListener("touchend",()=>seeking=false);
 
       // Geschwindigkeit
-      function setRate(r){const rate=Math.max(0.8,parseFloat(r)||1);audio.playbackRate=rate;speedBtns.forEach(b=>b.classList.toggle("active",parseFloat(b.dataset.rate)===rate));if(speedSelect) speedSelect.value=String(rate);}
+      function setRate(r){
+        const rate=Math.max(0.8,parseFloat(r)||1);
+        audio.playbackRate=rate;
+        speedBtns.forEach(b=>b.classList.toggle("active",parseFloat(b.dataset.rate)===rate));
+        if(speedSelect) speedSelect.value=String(rate);
+      }
       speedBtns.forEach(b=> b.onclick=()=> setRate(b.dataset.rate) );
       if(speedSelect){ speedSelect.onchange=()=> setRate(speedSelect.value); }
+
+      // Impressum/Datenschutz Modal
+      const modal = document.getElementById('legalModal');
+      const open  = document.getElementById('openLegal');
+      const close = document.getElementById('closeLegal');
+      function showModal(){ modal.setAttribute('open',''); modal.setAttribute('aria-hidden','false'); }
+      function hideModal(){ modal.removeAttribute('open'); modal.setAttribute('aria-hidden','true'); }
+      open.addEventListener('click', showModal);
+      close.addEventListener('click', hideModal);
+      modal.addEventListener('click', (e)=>{ if(e.target===modal) hideModal(); });
+      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') hideModal(); });
+
+      // Datum "Stand" im Modal
+      const d=new Date();
+      document.getElementById('legalDate').textContent =
+        `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
     })();
   </script>
 </body>
