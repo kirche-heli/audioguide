@@ -24,237 +24,123 @@
 
     /* Topbar */
     .topbar{min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-    .title{
-      font-size:14px;font-weight:400;color:var(--muted);letter-spacing:.01em;
-      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;text-wrap:balance;overflow:hidden;margin-right:8px
-    }
-    .lang{display:inline-flex;border:1px solid var(--line);background:var(--pill);border-radius:999px;overflow:hidden;flex-shrink:0}
-    .lang button{
-      border:0;background:transparent;color:var(--muted);font-weight:600;font-size:12px;padding:6px 12px;
-      display:inline-flex;align-items:center;gap:8px;line-height:1;white-space:nowrap;cursor:pointer
-    }
+    .title{font-size:14px;font-weight:400;color:var(--muted);margin-right:8px}
+    .lang{display:inline-flex;border:1px solid var(--line);background:var(--pill);border-radius:999px;overflow:hidden}
+    .lang button{border:0;background:transparent;color:var(--muted);font-weight:600;font-size:12px;padding:6px 12px;display:inline-flex;align-items:center;gap:8px;cursor:pointer}
     .lang button.active{color:var(--fg);background:#e9edf2}
 
     /* Karte */
-    .card{
-      background:var(--card);border:1px solid var(--line);border-radius:14px;
-      padding:10px;display:flex;flex-direction:column;gap:10px
-    }
+    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:10px}
 
-    /* Cover: quadratisch, voll sichtbar */
-    .cover-wrap{
-      position:relative; border-radius:12px; overflow:hidden; border:1px solid var(--line);
-      width:100%; aspect-ratio:1/1; background:#e6eaef;
-    }
+    /* Cover */
+    .cover-wrap{position:relative; border-radius:12px; overflow:hidden; border:1px solid var(--line); width:100%; aspect-ratio:1/1; background:#e6eaef;}
     .cover{width:100%;height:100%;object-fit:cover;display:block}
 
-    /* Timeline-Overlay am unteren Rand des Covers */
-    .scrub-overlay{
-      position:absolute; left:0; right:0; bottom:0; padding:10px 10px 8px;
-      background:linear-gradient(180deg, rgba(241,243,245,0) 0%, rgba(246,247,249,.82) 40%, rgba(246,247,249,.95) 100%);
-      border-top:1px solid rgba(0,0,0,.05);
-    }
-    .progress{
-      position:relative;width:100%;height:6px;border-radius:999px;background:#e2e7ee;border:1px solid var(--line);
-      cursor:pointer;touch-action:none
-    }
+    /* Timeline-Overlay */
+    .scrub-overlay{position:absolute; left:0; right:0; bottom:0; padding:10px; background:linear-gradient(180deg, rgba(241,243,245,0) 0%, rgba(246,247,249,.9) 40%, rgba(246,247,249,.95) 100%);}
+    .progress{position:relative;width:100%;height:6px;border-radius:999px;background:#e2e7ee;border:1px solid var(--line);cursor:pointer}
     .bar{position:absolute;left:0;top:0;height:100%;width:0%;background:var(--accent);border-radius:999px}
-    .thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 5px rgba(15,23,42,.08)}
+    .thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;background:var(--accent)}
     .times{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
 
     /* Controls */
     .controls{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin-top:2px}
-    .skip{justify-self:center;display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-weight:600;font-size:14px;background:transparent;border:0;padding:6px 4px;cursor:pointer}
-    .skip svg{width:16px;height:16px;opacity:.65;fill:currentColor}
-    .play{width:66px;height:66px;border-radius:50%;background:var(--play);color:#fff;border:0;cursor:pointer;display:grid;place-items:center;box-shadow:0 6px 18px rgba(15,23,42,.22)}
+    .skip{justify-self:center;display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:14px;background:transparent;border:0;cursor:pointer}
+    .play{width:66px;height:66px;border-radius:50%;background:var(--play);color:#fff;border:0;cursor:pointer;display:grid;place-items:center}
     .play svg{width:24px;height:24px;fill:#fff}
 
     /* Tempo */
-    .speed{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+    .speed{display:flex;align-items:center;gap:8px;justify-content:center;margin-top:6px}
     .speed .label{font-size:12px;color:var(--muted)}
-    .speed .group{display:inline-flex;gap:6px;flex-wrap:wrap}
     .speed button{border:1px solid var(--line);background:#eef2f6;color:#2f3640;padding:6px 10px;border-radius:999px;font-size:12px;cursor:pointer}
     .speed button.active{border-color:#b7c2cf;box-shadow:0 0 0 1px #b7c2cf inset}
-    .speed select{display:none}
 
-    /* Footer + dezente Links */
-    footer{color:#7d8590;text-align:center;font-size:12px;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .legal-link{display:inline-block;color:#7d8590;text-decoration:underline dotted 1px;cursor:pointer}
+    /* Footer */
+    footer{color:#7d8590;text-align:center;font-size:12px;margin-top:6px}
+    footer div{margin:4px 0}
     footer a{color:#7d8590;text-decoration:none}
     footer a:hover{text-decoration:underline;color:#2b3035}
 
-    /* Höhe-abhängige Feinjustierung */
-    @media (max-height:740px){
-      .play{width:60px;height:60px}
-      .skip{font-size:13px}
-      .scrub-overlay{padding:8px 8px 6px}
-    }
-    @media (max-width:360px){
-      .speed .group{display:none}
-      .speed select{display:inline-block;border:1px solid var(--line);background:#eef2f6;color:#2f3640;padding:6px 10px;border-radius:999px;font-size:12px}
-    }
-
-    /* === Legal Modal === */
-    .modal{
-      position:fixed; inset:0; background:rgba(0,0,0,.42);
-      display:none; align-items:center; justify-content:center; z-index:9999;
-    }
+    /* Modal */
+    .modal{position:fixed; inset:0; background:rgba(0,0,0,.42);display:none; align-items:center; justify-content:center; z-index:9999;}
     .modal[open]{display:flex}
-    .modal-card{
-      width:min(780px,92vw); max-height:86vh; background:#fff; color:#1f2530;
-      border-radius:14px; box-shadow:0 20px 60px rgba(0,0,0,.25); overflow:hidden;
-      border:1px solid #e7ecf2; display:flex; flex-direction:column;
-    }
-    .modal-head{
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-      padding:14px 16px; background:#f6f7f9; border-bottom:1px solid #e7ecf2;
-    }
-    .modal-head h3{margin:0; font-size:16px; font-weight:700; color:#303640}
-    .modal-close{border:0;background:#eaeef3;border-radius:10px;padding:8px 10px;cursor:pointer}
-    .modal-body{
-      padding:14px 16px; overflow:auto; line-height:1.55; font-size:14px;
-    }
-    .modal-body h4{margin:16px 0 6px; font-size:15px; color:#2b3035}
-    .modal-body p, .modal-body li{color:#3a4149}
-    .modal-body small{color:#667085}
+    .modal-card{width:min(780px,92vw); max-height:86vh; background:#fff; color:#1f2530; border-radius:14px; overflow:hidden; display:flex; flex-direction:column;}
+    .modal-head{display:flex; justify-content:space-between; padding:12px 16px; background:#f6f7f9;}
+    .modal-body{padding:14px 16px; overflow:auto; font-size:14px; line-height:1.55;}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="topbar">
       <div class="title">Audioguide der Ev. Stadtkirche von Hessisch Lichtenau</div>
-      <div class="lang" aria-label="Sprache / Language">
-        <button id="btn-de" class="active"><span>🇩🇪</span><span>DE</span></button>
-        <button id="btn-en"><span>🇬🇧</span><span>EN</span></button>
+      <div class="lang">
+        <button id="btn-de" class="active">🇩🇪 DE</button>
+        <button id="btn-en">🇬🇧 EN</button>
       </div>
     </div>
 
     <section class="card">
-      <!-- Cover + Timeline-Overlay -->
       <div class="cover-wrap">
         <img src="cover.jpeg" alt="Cover" class="cover" />
-        <div class="scrub-overlay" aria-label="Wiedergabefortschritt">
+        <div class="scrub-overlay">
           <div class="progress" id="progress">
             <div class="bar" id="bar"></div>
-            <div class="thumb" id="thumb" style="left:0%"></div>
+            <div class="thumb" id="thumb"></div>
           </div>
           <div class="times"><span id="cur">0:00</span><span id="dur">0:00</span></div>
         </div>
       </div>
 
-      <!-- Controls -->
       <div class="controls">
-        <button id="back15" class="skip" aria-label="15 Sekunden zurück">
-          <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg><span>-15s</span>
-        </button>
-        <button id="btn-play" class="play" aria-label="Abspielen">
+        <button id="back15" class="skip">-15s</button>
+        <button id="btn-play" class="play">
           <svg id="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7-11-7z"/></svg>
           <svg id="icon-pause" viewBox="0 0 24 24" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
         </button>
-        <button id="fwd15" class="skip" aria-label="15 Sekunden vor">
-          <span>+15s</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
-        </button>
+        <button id="fwd15" class="skip">+15s</button>
       </div>
 
-      <!-- Tempo -->
-      <div class="speed" aria-label="Wiedergabegeschwindigkeit">
-        <span class="label" id="i-speed">Tempo</span>
-        <div class="group">
-          <button data-rate="0.8">0.8×</button>
-          <button data-rate="1" class="active">1×</button>
-          <button data-rate="1.1">1.1×</button>
-          <button data-rate="1.25">1.25×</button>
-        </div>
-        <select id="speedSelect" aria-label="Tempo auswählen">
-          <option value="0.8">0.8×</option>
-          <option value="1" selected>1×</option>
-          <option value="1.1">1.1×</option>
-          <option value="1.25">1.25×</option>
-        </select>
+      <div class="speed">
+        <span class="label">Tempo</span>
+        <button data-rate="0.8">0.8×</button>
+        <button data-rate="1" class="active">1×</button>
+        <button data-rate="1.1">1.1×</button>
+        <button data-rate="1.25">1.25×</button>
       </div>
     </section>
 
     <footer>
-      © <span id="year"></span> Evangelische Stadtkirche Hessisch Lichtenau • Audioguide
-      · <a class="legal-link" id="openLegal">Impressum & Datenschutz</a><br>
-      <small>Intro/Outro-Musik: Track „London“ · Musik von 
-        <a href="https://www.fiftysounds.com" target="_blank" rel="noopener">fiftysounds.com</a>
-      </small>
+      <div>© <span id="year"></span> Evangelische Stadtkirche Hessisch Lichtenau • Audioguide</div>
+      <div>Intro/Outro-Musik: Track „London“ · Musik von <a href="https://www.fiftysounds.com" target="_blank">fiftysounds.com</a></div>
+      <div><a class="legal-link" id="openLegal">Impressum & Datenschutz</a></div>
     </footer>
   </div>
 
   <audio id="audio" preload="metadata"></audio>
 
-  <!-- Modal: Impressum & Datenschutz -->
-  <div class="modal" id="legalModal" aria-hidden="true" aria-labelledby="legalTitle" role="dialog">
+  <!-- Modal -->
+  <div class="modal" id="legalModal">
     <div class="modal-card">
       <div class="modal-head">
-        <h3 id="legalTitle">Impressum & Datenschutz</h3>
-        <button class="modal-close" id="closeLegal" aria-label="Schließen">✕</button>
+        <h3>Impressum & Datenschutz</h3>
+        <button id="closeLegal">✕</button>
       </div>
       <div class="modal-body">
         <h4>Impressum</h4>
         <p><strong>Ev. Kirchengemeinde Hessisch Lichtenau</strong><br>
-           Mühlweg&nbsp;21 · 37235 Hessisch Lichtenau<br>
-           Telefon: 05602&nbsp;–&nbsp;2403 ·
-           E-Mail: <a href="mailto:hessischlichtenau.gemeindebuero@ekkw.de">hessischlichtenau.gemeindebuero@ekkw.de</a></p>
-        <p>Die Ev. Kirchengemeinde Hessisch Lichtenau ist eine Körperschaft des öffentlichen Rechts.
-           Vertretungsberechtigt ist der Vorstand der Kirchengemeinde.</p>
-        <p><strong>Verantwortlich nach §&nbsp;18&nbsp;MStV:</strong><br>
-           Pfarrerin Anja Peters, Mühlweg&nbsp;21, 37235 Hessisch Lichtenau</p>
-
-        <h4>Rechtliche Hinweise</h4>
-        <p>Alle Inhalte dieser Seite wurden mit größter Sorgfalt erstellt; für Aktualität, Vollständigkeit
-           und Richtigkeit wird keine Gewähr übernommen. Wir behalten uns vor, Inhalte ohne Ankündigung
-           zu ändern oder zu entfernen. Externe Links werden beim Setzen geprüft; für deren aktuelle Inhalte
-           sind ausschließlich die jeweiligen Anbieter verantwortlich. Hinweise auf Rechtsverstöße nehmen
-           wir unter der oben genannten Adresse entgegen und prüfen umgehend.</p>
-
+        Mühlweg 21 · 37235 Hessisch Lichtenau<br>
+        Telefon: 05602 – 2403<br>
+        E-Mail: <a href="mailto:hessischlichtenau.gemeindebuero@ekkw.de">hessischlichtenau.gemeindebuero@ekkw.de</a></p>
+        <p>Die Ev. Kirchengemeinde Hessisch Lichtenau ist eine Körperschaft des öffentlichen Rechts. Vertretungsberechtigt ist der Kirchenvorstand.</p>
+        <h4>Verantwortlich nach §18 MStV</h4>
+        <p>Pfarrerin Anja Peters, Mühlweg 21, 37235 Hessisch Lichtenau</p>
         <h4>Datenschutz</h4>
-        <p>Diese Seite informiert über einen Audioguide und stellt ihn zum Abspielen bereit. Es werden
-           <strong>keine Tracking-Dienste</strong> eingesetzt, keine Analyse-Profile erstellt und keine
-           personenbezogenen Daten an Dritte übermittelt.</p>
-
-        <h4>Verantwortlicher</h4>
-        <p>Ev. Kirchengemeinde Hessisch Lichtenau, Mühlweg&nbsp;21, 37235 Hessisch Lichtenau
-           (Kontaktdaten siehe Impressum).</p>
-
-        <h4>Server-Protokolle</h4>
-        <p>Der Hosting-Provider kann beim Aufruf der Seite technisch notwendige Zugriffsdaten in
-           sogenannten Server-Logfiles verarbeiten (z. B. aufgerufene URL, Datum/Uhrzeit, übertragene Datenmenge,
-           Referrer, Browser/OS, IP-Adresse). Die Verarbeitung dient der Sicherstellung des technischen
-           Betriebs und der Abwehr von Angriffen und wird regelmäßig kurzfristig gelöscht, sofern keine
-           sicherheitsrelevante Auswertung erforderlich ist.</p>
-
-        <h4>Lokale Speicherung</h4>
-        <p>Zur komfortablen Nutzung speichert die Seite Einstellungen (gewählte Sprache und Wiedergabegeschwindigkeit)
-           lokal im Browser (<em>localStorage</em>). Diese Werte verlassen Ihr Endgerät nicht und können Sie jederzeit
-           löschen, indem Sie die Website-Daten in Ihrem Browser entfernen.</p>
-
-        <h4>Cookies</h4>
-        <p>Diese Seite setzt <strong>keine</strong> eigenen Cookies. Etwaige Cookies des Hosters oder des
-           Browsers sind rein technisch erforderlich.</p>
-
-        <h4>Kontakt</h4>
-        <p>Wenn Sie uns per E-Mail kontaktieren, verarbeiten wir Ihre Angaben zur Bearbeitung der Anfrage.
-           Rechtsgrundlage ist unser berechtigtes Interesse an der Beantwortung (Art.&nbsp;6&nbsp;Abs.&nbsp;1&nbsp;lit.&nbsp;f&nbsp;DSGVO)
-           bzw. Ihre Einwilligung, sofern erteilt.</p>
-
+        <p>Es werden keine Tracking-Dienste oder Cookies eingesetzt. Technisch notwendige Protokolle des Hosting-Providers werden kurzzeitig gespeichert.</p>
+        <p>Lokale Speicherung (Sprache & Wiedergabegeschwindigkeit) erfolgt ausschließlich in Ihrem Browser und kann jederzeit gelöscht werden.</p>
         <h4>Ihre Rechte</h4>
-        <p>Sie haben nach der DSGVO das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung,
-           Widerspruch sowie auf Datenübertragbarkeit. Zudem besteht ein Beschwerderecht bei einer
-           Datenschutzaufsichtsbehörde. Bitte wenden Sie sich hierzu an die oben genannten Kontaktdaten.</p>
-
-        <h4>Urheberrecht</h4>
-        <p>Texte, Bilder und Audiodateien dieser Seite sind urheberrechtlich geschützt.
-           Jede weitergehende Nutzung bedarf unserer vorherigen Zustimmung.</p>
-
+        <p>Nach DSGVO: Auskunft, Berichtigung, Löschung, Einschränkung, Widerspruch, Datenübertragbarkeit. Beschwerden bei der Aufsichtsbehörde möglich.</p>
         <h4>Musiknachweis</h4>
-        <p>Intro/Outro-Musik: Track „London“ · Musik von 
-           <a href="https://www.fiftysounds.com" target="_blank" rel="noopener">www.fiftysounds.com</a>.
-           Nutzung gemäß FiftySounds License (Attribution erforderlich).</p>
-
-        <p><small>Stand: <span id="legalDate"></span></small></p>
+        <p>Intro/Outro-Musik: Track „London“ · Musik von <a href="https://www.fiftysounds.com" target="_blank">www.fiftysounds.com</a> (Attribution erforderlich).</p>
       </div>
     </div>
   </div>
@@ -262,7 +148,6 @@
   <script>
     (()=> {
       const files={de:"Audioguide Stadtkirche (deutsch).mp3",en:"Audioguide Stadtkirche (englisch).mp3"};
-
       const audio=document.getElementById("audio"),
             btnPlay=document.getElementById("btn-play"),
             iconPlay=document.getElementById("icon-play"),
@@ -275,94 +160,48 @@
             bar=document.getElementById("bar"),
             thumb=document.getElementById("thumb"),
             cur=document.getElementById("cur"),
-            dur=document.getElementById("dur"),
-            speedBtns=[...document.querySelectorAll("[data-rate]")],
-            speedSelect=document.getElementById("speedSelect");
+            dur=document.getElementById("dur");
 
       document.getElementById("year").textContent=new Date().getFullYear();
 
       const fmt=s=>(isNaN(s)||!isFinite(s))?"0:00":`${Math.floor(s/60)}:${Math.floor(s%60).toString().padStart(2,"0")}`;
       let lang=localStorage.getItem("hl-lang")||"de";
 
-      function vibrate(ms){ if(navigator.vibrate) try{ navigator.vibrate(ms); }catch(e){} }
-
       function updatePlayIcon(p){iconPlay.style.display=p?"block":"none";iconPause.style.display=p?"none":"block";}
       function updateProgressUI(){
         if(!audio.duration) return;
         const pct=(audio.currentTime/audio.duration)*100;
-        bar.style.width=pct+"%";
-        thumb.style.left=pct+"%";
-        cur.textContent=fmt(audio.currentTime);
-        dur.textContent=fmt(audio.duration);
+        bar.style.width=pct+"%";thumb.style.left=pct+"%";
+        cur.textContent=fmt(audio.currentTime); dur.textContent=fmt(audio.duration);
       }
-      function setSource(){
-        audio.src=(lang==="de")?files.de:files.en;
-        bar.style.width="0%"; thumb.style.left="0%";
-        cur.textContent="0:00"; dur.textContent="0:00";
-        audio.load();
-      }
-      async function startPlayback(){
-        try{ await audio.play(); updatePlayIcon(false); vibrate(10); }
-        catch(e){ updatePlayIcon(true); }
-      }
-      function setLanguage(next){
-        lang=next; localStorage.setItem("hl-lang",lang);
-        btnDe.classList.toggle("active",lang==="de"); btnEn.classList.toggle("active",lang==="en");
-        setSource(); startPlayback(); // Autoplay nach Sprachwechsel
-      }
-
+      function setSource(){audio.src=lang==="de"?files.de:files.en;audio.load();}
+      function startPlayback(){audio.play().then(()=>updatePlayIcon(false)).catch(()=>updatePlayIcon(true));}
+      function setLanguage(next){lang=next;localStorage.setItem("hl-lang",lang);btnDe.classList.toggle("active",lang==="de");btnEn.classList.toggle("active",lang==="en");setSource();startPlayback();}
       setSource();
-      btnDe.onclick=()=>setLanguage("de");
-      btnEn.onclick=()=>setLanguage("en");
 
-      btnPlay.onclick=()=>{ if(audio.paused){ startPlayback(); } else { audio.pause(); updatePlayIcon(true); vibrate(6); } };
-      back15.onclick=()=>{ audio.currentTime=Math.max(0,audio.currentTime-15); updateProgressUI(); vibrate(6); };
-      fwd15.onclick =()=>{ audio.currentTime=Math.min(audio.duration||audio.currentTime+15,audio.currentTime+15); updateProgressUI(); vibrate(6); };
-
+      btnDe.onclick=()=>setLanguage("de");btnEn.onclick=()=>setLanguage("en");
+      btnPlay.onclick=()=>{if(audio.paused){startPlayback();}else{audio.pause();updatePlayIcon(true);}};
+      back15.onclick=()=>{audio.currentTime=Math.max(0,audio.currentTime-15);updateProgressUI();};
+      fwd15.onclick =()=>{audio.currentTime=Math.min(audio.duration||audio.currentTime+15,audio.currentTime+15);updateProgressUI();};
       audio.addEventListener("loadedmetadata",updateProgressUI);
       audio.addEventListener("timeupdate",updateProgressUI);
       audio.addEventListener("ended",()=>updatePlayIcon(true));
 
-      // Scrub (Tap & Drag)
+      // Scrubbing
       let seeking=false;
-      function pctFromEvent(e){
-        const r=progress.getBoundingClientRect();
-        const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left;
-        return Math.min(Math.max(0,x/r.width),1);
-      }
-      function seekTo(p){ if(!audio.duration) return; audio.currentTime=p*audio.duration; updateProgressUI(); }
+      function pctFromEvent(e){const r=progress.getBoundingClientRect();const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left;return Math.min(Math.max(0,x/r.width),1);}
+      function seekTo(p){if(!audio.duration) return; audio.currentTime=p*audio.duration;updateProgressUI();}
       progress.addEventListener("mousedown",e=>{seeking=true;seekTo(pctFromEvent(e));});
-      progress.addEventListener("touchstart",e=>{seeking=true;seekTo(pctFromEvent(e));},{passive:true});
       window.addEventListener("mousemove",e=>{if(seeking)seekTo(pctFromEvent(e));});
-      window.addEventListener("touchmove",e=>{if(seeking)seekTo(pctFromEvent(e));},{passive:true});
       window.addEventListener("mouseup",()=>seeking=false);
-      window.addEventListener("touchend",()=>seeking=false);
 
-      // Geschwindigkeit
-      function setRate(r){
-        const rate=Math.max(0.8,parseFloat(r)||1);
-        audio.playbackRate=rate;
-        speedBtns.forEach(b=>b.classList.toggle("active",parseFloat(b.dataset.rate)===rate));
-        if(speedSelect) speedSelect.value=String(rate);
-      }
-      speedBtns.forEach(b=> b.onclick=()=> setRate(b.dataset.rate) );
-      if(speedSelect){ speedSelect.onchange=()=> setRate(speedSelect.value); }
-
-      // Impressum/Datenschutz Modal
-      const modal = document.getElementById('legalModal');
-      const open  = document.getElementById('openLegal');
-      const close = document.getElementById('closeLegal');
-      function showModal(){ modal.setAttribute('open',''); modal.setAttribute('aria-hidden','false'); }
-      function hideModal(){ modal.removeAttribute('open'); modal.setAttribute('aria-hidden','true'); }
-      open.addEventListener('click', showModal);
-      close.addEventListener('click', hideModal);
-      modal.addEventListener('click', (e)=>{ if(e.target===modal) hideModal(); });
-      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') hideModal(); });
-
-      // Datum "Stand" im Modal
-      const d=new Date();
-      document.getElementById('legalDate').textContent =
-        `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
+      // Modal
+      const modal=document.getElementById('legalModal');
+      const open=document.getElementById('openLegal');
+      const close=document.getElementById('closeLegal');
+      open.onclick=()=>modal.setAttribute('open','');
+      close.onclick=()=>modal.removeAttribute('open');
+      modal.onclick=(e)=>{if(e.target===modal)modal.removeAttribute('open');};
     })();
   </script>
 </body>
