@@ -208,6 +208,24 @@
       window.addEventListener("mousemove",e=>{if(seeking)seekTo(pctFromEvent(e));});
       window.addEventListener("mouseup",()=>seeking=false);
 
+      /* === Tempo-Steuerung (NEU) === */
+      const speedButtons = document.querySelectorAll(".speed button");
+      function applyRate(rate){
+        audio.playbackRate = rate;
+        speedButtons.forEach(b => b.classList.toggle("active", parseFloat(b.dataset.rate) === rate));
+        localStorage.setItem("hl-speed", rate);
+      }
+      // Klick-Handler
+      speedButtons.forEach(btn=>{
+        btn.addEventListener("click",()=>{
+          const rate=parseFloat(btn.dataset.rate);
+          if(!isNaN(rate)) applyRate(rate);
+        });
+      });
+      // gespeicherte Geschwindigkeit wiederherstellen
+      const savedRate = parseFloat(localStorage.getItem("hl-speed"));
+      if(!isNaN(savedRate)) applyRate(savedRate);
+
       // Modal
       const modal=document.getElementById('legalModal');
       const open=document.getElementById('openLegal');
