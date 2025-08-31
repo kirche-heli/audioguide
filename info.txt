@@ -1,0 +1,2 @@
+Innen-QR: https://deinedomain.tld/index.html?area=inside
+Außen-QR: https://deinedomain.tld/index.html?area=outside
