@@ -160,7 +160,19 @@
 
   <script>
     (()=> {
-      const files={de:"Audioguide Stadtkirche (deutsch).mp3",en:"Audioguide Stadtkirche (englisch).mp3"};
+      // === Dateien (Innen & Außen) =========================
+      const files = {
+        inside: {
+          de: "Audioguide Stadtkirche (deutsch).mp3",
+          en: "Audioguide Stadtkirche (englisch).mp3"
+        },
+        outside: {
+          de: "Audioguide Stadtkirche außen (deutsch).mp3",
+          en: "Audioguide Stadtkirche außen (englisch).mp3"
+        }
+      };
+
+      // === Elemente =======================================
       const audio=document.getElementById("audio"),
             btnPlay=document.getElementById("btn-play"),
             iconPlay=document.getElementById("icon-play"),
@@ -177,25 +189,78 @@
 
       document.getElementById("year").textContent=new Date().getFullYear();
 
+      // === Zustand (Sprache & Bereich) ====================
+      const params = new URLSearchParams(location.search);
+      let area = (params.get("area")==="outside"||params.get("area")==="inside")
+        ? params.get("area")
+        : (localStorage.getItem("hl-area") || "inside");
+
+      let lang = (params.get("lang")==="en"||params.get("lang")==="de")
+        ? params.get("lang")
+        : (localStorage.getItem("hl-lang") || "de");
+
       const fmt=s=>(isNaN(s)||!isFinite(s))?"0:00":`${Math.floor(s/60)}:${Math.floor(s%60).toString().padStart(2,"0")}`;
-      let lang=localStorage.getItem("hl-lang")||"de";
 
       function updatePlayIcon(p){iconPlay.style.display=p?"block":"none";iconPause.style.display=p?"none":"block";}
+
       function updateProgressUI(){
         if(!audio.duration) return;
         const pct=(audio.currentTime/audio.duration)*100;
         bar.style.width=pct+"%";thumb.style.left=pct+"%";
         cur.textContent=fmt(audio.currentTime); dur.textContent=fmt(audio.duration);
       }
-      function setSource(){audio.src=lang==="de"?files.de:files.en;audio.load();}
-      function startPlayback(){audio.play().then(()=>updatePlayIcon(false)).catch(()=>updatePlayIcon(true));}
-      function setLanguage(next){lang=next;localStorage.setItem("hl-lang",lang);btnDe.classList.toggle("active",lang==="de");btnEn.classList.toggle("active",lang==="en");setSource();startPlayback();}
-      setSource();
 
-      btnDe.onclick=()=>setLanguage("de");btnEn.onclick=()=>setLanguage("en");
+      // Quelle bestimmen (mit sicherem Fallback auf inside/de)
+      function resolveSrc(){
+        if (files[area] && files[area][lang]) return files[area][lang];
+        if (files.inside && files.inside.de) return files.inside.de;
+        // allersicherster Fallback
+        const firstArea = Object.keys(files)[0];
+        const firstLang = files[firstArea] ? Object.keys(files[firstArea])[0] : "de";
+        return files[firstArea]?.[firstLang] || "";
+      }
+
+      function setSource(){
+        const src = resolveSrc();
+        if (audio.getAttribute("src") !== src) {
+          audio.src = src;
+          audio.load();
+        }
+        // aktuellen Zustand merken
+        localStorage.setItem("hl-area", area);
+        localStorage.setItem("hl-lang", lang);
+        // URL schön halten, damit geteilte Links stimmen
+        const u = new URL(location.href);
+        u.searchParams.set("area", area);
+        u.searchParams.set("lang", lang);
+        history.replaceState({}, "", u);
+      }
+
+      function startPlayback(){audio.play().then(()=>updatePlayIcon(false)).catch(()=>updatePlayIcon(true));}
+
+      function setLanguage(next){
+        lang=next;
+        localStorage.setItem("hl-lang",lang);
+        btnDe.classList.toggle("active",lang==="de");
+        btnEn.classList.toggle("active",lang==="en");
+        setSource();
+        startPlayback();
+      }
+
+      // Initiale Quelle
+      setLanguage(lang); // setzt Buttons & ruft setSource()
+      // Sprach-Buttons
+      btnDe.onclick=()=>setLanguage("de");
+      btnEn.onclick=()=>setLanguage("en");
+
+      // Play/Pause
       btnPlay.onclick=()=>{if(audio.paused){startPlayback();}else{audio.pause();updatePlayIcon(true);}};
+
+      // Skip
       back15.onclick=()=>{audio.currentTime=Math.max(0,audio.currentTime-15);updateProgressUI();};
       fwd15.onclick =()=>{audio.currentTime=Math.min(audio.duration||audio.currentTime+15,audio.currentTime+15);updateProgressUI();};
+
+      // Progress & Ende
       audio.addEventListener("loadedmetadata",updateProgressUI);
       audio.addEventListener("timeupdate",updateProgressUI);
       audio.addEventListener("ended",()=>updatePlayIcon(true));
@@ -208,21 +273,19 @@
       window.addEventListener("mousemove",e=>{if(seeking)seekTo(pctFromEvent(e));});
       window.addEventListener("mouseup",()=>seeking=false);
 
-      /* === Tempo-Steuerung (NEU) === */
+      /* === Tempo-Steuerung (wie gehabt) === */
       const speedButtons = document.querySelectorAll(".speed button");
       function applyRate(rate){
         audio.playbackRate = rate;
         speedButtons.forEach(b => b.classList.toggle("active", parseFloat(b.dataset.rate) === rate));
         localStorage.setItem("hl-speed", rate);
       }
-      // Klick-Handler
       speedButtons.forEach(btn=>{
         btn.addEventListener("click",()=>{
           const rate=parseFloat(btn.dataset.rate);
           if(!isNaN(rate)) applyRate(rate);
         });
       });
-      // gespeicherte Geschwindigkeit wiederherstellen
       const savedRate = parseFloat(localStorage.getItem("hl-speed"));
       if(!isNaN(savedRate)) applyRate(savedRate);
 
