@@ -1,2 +1,5 @@
 Innen-QR: https://deinedomain.tld/index.html?area=inside
 Außen-QR: https://deinedomain.tld/index.html?area=outside
+
+Außen-QR: https://kirche-heli.github.io/audioguide/?area=outside&lang=de
+Innen-QR: https://kirche-heli.github.io/audioguide/?area=inside&lang=de
