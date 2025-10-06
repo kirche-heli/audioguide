@@ -21,40 +21,50 @@
       -webkit-font-smoothing:antialiased;
     }
     .wrap{max-width:760px;margin:0 auto;padding:10px 12px 18px;display:flex;flex-direction:column;gap:10px}
+
     .topbar{min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:8px}
     .title{font-size:14px;font-weight:400;color:var(--muted);margin-right:8px}
+
     .lang-select{display:inline-flex;align-items:center;gap:8px}
     .lang-select label{font-size:12px;color:var(--muted)}
     .select{position:relative;display:inline-block;background:var(--pill);border:1px solid var(--line);border-radius:999px;overflow:hidden;padding:0 8px}
     .select select{appearance:none;border:0;background:transparent;padding:6px 26px 6px 8px;font-size:12px;font-weight:600;color:var(--fg);cursor:pointer;outline:none}
     .select::after{content:"▾";position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--muted);pointer-events:none}
+
     .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:10px}
+
     .cover-wrap{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line);width:100%;aspect-ratio:1/1;background:#e6eaef;}
     .cover{width:100%;height:100%;object-fit:cover;display:block}
+
     .scrub-overlay{position:absolute;left:0;right:0;bottom:0;padding:10px;background:linear-gradient(180deg, rgba(241,243,245,0) 0%, rgba(246,247,249,.9) 40%, rgba(246,247,249,.95) 100%)}
     .progress{position:relative;width:100%;height:6px;border-radius:999px;background:#e2e7ee;border:1px solid var(--line);cursor:pointer;touch-action:none}
     .bar{position:absolute;left:0;top:0;height:100%;width:0%;background:var(--accent);border-radius:999px}
     .thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px rgba(15,23,42,.08)}
     .thumb::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:32px;height:32px}
     .times{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
+
     .controls{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin-top:2px}
     .skip{justify-self:center;display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:14px;background:transparent;border:0;cursor:pointer}
     .skip svg{width:16px;height:16px;opacity:.65;fill:currentColor}
     .play{width:66px;height:66px;border-radius:50%;background:var(--play);color:#fff;border:0;cursor:pointer;display:grid;place-items:center}
     .play svg{width:24px;height:24px;fill:#fff}
+
     .speed{display:flex;align-items:center;gap:8px;justify-content:center;margin-top:6px}
     .speed .label{font-size:12px;color:var(--muted)}
     .speed button{border:1px solid var(--line);background:#eef2f6;color:#2f3640;padding:6px 10px;border-radius:999px;font-size:12px;cursor:pointer}
     .speed button.active{border-color:#b7c2cf;box-shadow:0 0 0 1px #b7c2cf inset}
+
     footer{color:#7d8590;text-align:center;font-size:12px;margin-top:6px}
     footer div{margin:4px 0}
     footer a{color:#7d8590;text-decoration:none}
     footer a:hover{text-decoration:underline;color:#2b3035}
+
     .modal{position:fixed;inset:0;background:rgba(0,0,0,.42);display:none;align-items:center;justify-content:center;z-index:9999}
     .modal[open]{display:flex}
     .modal-card{width:min(780px,92vw);max-height:86vh;background:#fff;color:#1f2530;border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
     .modal-head{display:flex;justify-content:space-between;padding:12px 16px;background:#f6f7f9}
     .modal-body{padding:14px 16px;overflow:auto;font-size:14px;line-height:1.55}
+
     .copy{border:1px solid var(--line);background:#f1f3f5;font-size:11px;padding:2px 6px;border-radius:6px;cursor:pointer}
     .copy:hover{background:#e5e7eb}
     .don-input{border:1px solid var(--line);border-radius:8px;padding:4px 8px;width:70px;text-align:right}
@@ -153,9 +163,9 @@
         <p>Es werden keine Tracking Dienste oder Cookies eingesetzt. Technisch notwendige Protokolle des Hosting Providers werden nur kurzzeitig gespeichert.</p>
         <p>Die lokale Speicherung von Sprache und Wiedergabegeschwindigkeit erfolgt ausschließlich in Ihrem Browser und kann jederzeit gelöscht werden.</p>
         <h4>Ihre Rechte</h4>
-        <p>Nach DSGVO: Auskunft, Berichtigung, Löschung, Einschränkung, Widerspruch und Datenübertragbarkeit. Beschwerden bei der Aufsichtsbehörde sind möglich.</p>
+        <p>Nach DSGVO. Auskunft, Berichtigung, Löschung, Einschränkung, Widerspruch und Datenübertragbarkeit. Beschwerden bei der Aufsichtsbehörde sind möglich.</p>
         <h4>Musiknachweis</h4>
-        <p>Intro und Outro Musik: Track London, Musik von <a href="https://www.fiftysounds.com" target="_blank">www.fiftysounds.com</a>.</p>
+        <p>Intro und Outro Musik. Track London, Musik von <a href="https://www.fiftysounds.com" target="_blank">www.fiftysounds.com</a>.</p>
       </div>
     </div>
   </div>
@@ -169,14 +179,14 @@
       <div class="modal-body">
         <p>Vielen Dank für Ihre Unterstützung. Sie können direkt per Banküberweisung spenden. Scannen Sie den QR Code mit Ihrer Banking App oder übernehmen Sie die Daten manuell.</p>
         <div style="margin-bottom:10px">
-          <label for="don-amount">Betrag (€): </label>
+          <label for="don-amount">Betrag (€). </label>
           <input id="don-amount" class="don-input" type="number" value="5" min="1" step="0.5">
         </div>
         <canvas id="donateQR" style="width:200px;height:200px;border:1px solid #d9dee5;border-radius:8px;background:#fff"></canvas>
         <div style="margin-top:10px">
-          <div><strong>Empfänger:</strong> <span id="don-name">Kirchenkreisamt Eschwege</span> <button class="copy" data-copy="#don-name">Kopieren</button></div>
-          <div><strong>IBAN:</strong> <span id="don-iban">DE91520604100001200100</span> <button class="copy" data-copy="#don-iban">Kopieren</button></div>
-          <div><strong>Verwendungszweck:</strong> <span id="don-ref">Kirchengemeinde, Hessisch Lichtenau, Audioguide Spende</span> <button class="copy" data-copy="#don-ref">Kopieren</button></div>
+          <div><strong>Empfänger.</strong> <span id="don-name">Kirchenkreisamt Eschwege</span> <button class="copy" data-copy="#don-name">Kopieren</button></div>
+          <div><strong>IBAN.</strong> <span id="don-iban">DE91520604100001200100</span> <button class="copy" data-copy="#don-iban">Kopieren</button></div>
+          <div><strong>Verwendungszweck.</strong> <span id="don-ref">Kirchengemeinde, Hessisch Lichtenau, Audioguide Spende</span> <button class="copy" data-copy="#don-ref">Kopieren</button></div>
         </div>
         <p style="font-size:12px;color:#6b7280;margin-top:10px">
           Für Spendenbescheinigungen geben Sie bitte im Verwendungszweck zusätzlich Ihren Namen und Ihre Anschrift an.
@@ -187,49 +197,49 @@
 
   <script>
     (()=>{
-      // feste Zuordnung für Französisch, flexible Erkennung für andere Sprachen
-      const fixedFR = {
+      // feste Dateinamen für Französisch
+      const FR = {
         inside: "Audioguide Stadtkirche (fr).mp3",
         outside: "Audioguide Stadtkirche außen (fr).mp3"
       };
       const labels = { de:"deutsch", en:"englisch", it:"italienisch", es:"spanisch" };
 
-      function buildCandidates(area, lang){
-        if(lang==="fr"){
-          const base = area==="outside" ? fixedFR.outside : fixedFR.inside;
-          return [base, encodeURI(base), base.replace("außen","aussen"), encodeURI(base.replace("außen","aussen"))];
-        }
-        const label = labels[lang] || "deutsch";
-        const prefix = area==="outside" ? "Audioguide Stadtkirche außen" : "Audioguide Stadtkirche";
-        const variants = [];
-        variants.push(`${prefix} (${label}).mp3`);
-        variants.push(`${prefix.replace("außen","aussen")} (${label}).mp3`);
-        const labelNoMarks = label.normalize("NFD").replace(/[\u0300-\u036f]/g,"");
-        variants.push(`${prefix} (${labelNoMarks}).mp3`);
-        const labelAscii = label.replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/Ä/g,"Ae").replace(/Ö/g,"Oe").replace(/Ü/g,"Ue");
-        variants.push(`${prefix} (${labelAscii}).mp3`);
-        return Array.from(new Set(variants));
+      // schneller Existenztest per HEAD, mit Range Fallback
+      async function urlExists(url){
+        const enc = encodeURI(url);
+        try{
+          const head = await fetch(enc, { method: "HEAD", cache: "no-cache" });
+          if(head.ok) return enc;
+          if(head.status === 405 || head.status === 501){
+            const getSmall = await fetch(enc, { method: "GET", headers: { "Range": "bytes=0-0" }, cache: "no-cache" });
+            if(getSmall.ok) return enc;
+          }
+        }catch(e){}
+        return null;
       }
 
-      function probeAudio(url){
-        return new Promise(resolve=>{
-          const a = new Audio();
-          a.preload = "metadata";
-          const timeout = setTimeout(()=>cleanup(false), 3000);
-          function cleanup(ok){ clearTimeout(timeout); a.onloadedmetadata=null; a.onerror=null; resolve(ok); }
-          a.onloadedmetadata = ()=>cleanup(true);
-          a.onerror = ()=>cleanup(false);
-          a.src = url;
-        });
+      function buildCandidates(area, lang){
+        if(lang === "fr"){
+          const base = area === "outside" ? FR.outside : FR.inside;
+          return [base, base.replace("außen","aussen")];
+        }
+        const label = labels[lang] || "deutsch";
+        const prefix = area === "outside" ? "Audioguide Stadtkirche außen" : "Audioguide Stadtkirche";
+        return [
+          `${prefix} (${label}).mp3`,
+          `${prefix.replace("außen","aussen")} (${label}).mp3`,
+          `${prefix} (${label.normalize("NFD").replace(/[\u0300-\u036f]/g,"")}).mp3`,
+          `${prefix} (${label.replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/Ä/g,"Ae").replace(/Ö/g,"Oe").replace(/Ü/g,"Ue")}).mp3`
+        ];
       }
 
       async function resolveBestSrc(area, lang){
         const candidates = buildCandidates(area, lang);
         for(const c of candidates){
-          const encoded = encodeURI(c);
-          if(await probeAudio(encoded)) return encoded;
-          if(await probeAudio(c)) return c;
+          const ok = await urlExists(c);
+          if(ok) return ok;
         }
+        // Fallback nur wenn wirklich nichts erreichbar ist
         return encodeURI("Audioguide Stadtkirche (deutsch).mp3");
       }
 
@@ -266,13 +276,20 @@
         u.searchParams.set("area",area);
         u.searchParams.set("lang",lang);
         history.replaceState({}, "", u);
+
         const src=await resolveBestSrc(area,lang);
-        if(audio.getAttribute("src")!==src){audio.src=src;audio.load();}
-        if(autoplay){audio.play().then(()=>updatePlayIcon(false)).catch(()=>updatePlayIcon(true));}
+        if(audio.getAttribute("src")!==src){
+          audio.src=src;
+          audio.load();
+        }
+        if(autoplay){
+          audio.play().then(()=>updatePlayIcon(false)).catch(()=>updatePlayIcon(true));
+        }
       }
 
       function startPlayback(){audio.play().then(()=>updatePlayIcon(false)).catch(()=>updatePlayIcon(true));}
 
+      // Start ohne Autoplay
       setSource(false);
 
       selectLang.addEventListener("change", e=>{
@@ -287,7 +304,7 @@
       audio.addEventListener("timeupdate",updateProgressUI);
       audio.addEventListener("ended",()=>updatePlayIcon(true));
 
-      // Ziehen des Fortschrittsbalkens mit Pointer Events
+      // Ziehen des Fortschrittsbalkens
       let seeking=false;
       let activePointerId=null;
 
@@ -306,14 +323,12 @@
         seeking=true;
         activePointerId=e.pointerId||1;
         progress.setPointerCapture?.(activePointerId);
-        const p=pctFromClientX(e.clientX);
-        seekToPercent(p);
+        seekToPercent(pctFromClientX(e.clientX));
       }
       function onPointerMove(e){
         if(!seeking) return;
         if(activePointerId!=null && e.pointerId!=null && e.pointerId!==activePointerId) return;
-        const p=pctFromClientX(e.clientX);
-        seekToPercent(p);
+        seekToPercent(pctFromClientX(e.clientX));
       }
       function onPointerUp(e){
         if(activePointerId!=null && e.pointerId!=null && e.pointerId!==activePointerId) return;
@@ -341,7 +356,7 @@
       document.getElementById("closeLegal").onclick=()=>legalModal.removeAttribute("open");
       legalModal.onclick=(e)=>{if(e.target===legalModal)legalModal.removeAttribute("open");};
 
-      // Spendenbereich mit QR Code
+      // Spendenbereich
       const donateModal=document.getElementById("donateModal");
       document.getElementById("openDonate").onclick=()=>donateModal.setAttribute("open","");
       document.getElementById("closeDonate").onclick=()=>donateModal.removeAttribute("open");
