@@ -5,9 +5,9 @@
   <title>Audioguide der Ev. Stadtkirche von Hessisch Lichtenau</title>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#f1f3f5" />
-  <!-- Suchmaschinen ausschließen -->
   <meta name="robots" content="noindex,nofollow,noarchive,nosnippet" />
   <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet" />
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
   <style>
     :root{
       --bg:#f1f3f5; --card:#f6f7f9; --fg:#2b3035; --muted:#6b7280; --line:#d9dee5;
@@ -21,62 +21,59 @@
       -webkit-font-smoothing:antialiased;
     }
     .wrap{max-width:760px;margin:0 auto;padding:10px 12px 18px;display:flex;flex-direction:column;gap:10px}
-
-    /* Topbar */
     .topbar{min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:8px}
     .title{font-size:14px;font-weight:400;color:var(--muted);margin-right:8px}
-    .lang{display:inline-flex;border:1px solid var(--line);background:var(--pill);border-radius:999px;overflow:hidden}
-    .lang button{border:0;background:transparent;color:var(--muted);font-weight:600;font-size:12px;padding:6px 12px;display:inline-flex;align-items:center;gap:8px;cursor:pointer}
-    .lang button.active{color:var(--fg);background:#e9edf2}
-
-    /* Karte */
+    .lang-select{display:inline-flex;align-items:center;gap:8px}
+    .lang-select label{font-size:12px;color:var(--muted)}
+    .select{position:relative;display:inline-block;background:var(--pill);border:1px solid var(--line);border-radius:999px;overflow:hidden;padding:0 8px}
+    .select select{appearance:none;border:0;background:transparent;padding:6px 26px 6px 8px;font-size:12px;font-weight:600;color:var(--fg);cursor:pointer;outline:none}
+    .select::after{content:"▾";position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--muted);pointer-events:none}
     .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:10px}
-
-    /* Cover */
-    .cover-wrap{position:relative; border-radius:12px; overflow:hidden; border:1px solid var(--line); width:100%; aspect-ratio:1/1; background:#e6eaef;}
+    .cover-wrap{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line);width:100%;aspect-ratio:1/1;background:#e6eaef;}
     .cover{width:100%;height:100%;object-fit:cover;display:block}
-
-    /* Timeline */
-    .scrub-overlay{position:absolute; left:0; right:0; bottom:0; padding:10px; background:linear-gradient(180deg, rgba(241,243,245,0) 0%, rgba(246,247,249,.9) 40%, rgba(246,247,249,.95) 100%);}
+    .scrub-overlay{position:absolute;left:0;right:0;bottom:0;padding:10px;background:linear-gradient(180deg,rgba(241,243,245,0)0%,rgba(246,247,249,.9)40%,rgba(246,247,249,.95)100%)}
     .progress{position:relative;width:100%;height:6px;border-radius:999px;background:#e2e7ee;border:1px solid var(--line);cursor:pointer}
     .bar{position:absolute;left:0;top:0;height:100%;width:0%;background:var(--accent);border-radius:999px}
     .thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;background:var(--accent)}
     .times{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
-
-    /* Controls */
     .controls{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin-top:2px}
     .skip{justify-self:center;display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:14px;background:transparent;border:0;cursor:pointer}
     .skip svg{width:16px;height:16px;opacity:.65;fill:currentColor}
     .play{width:66px;height:66px;border-radius:50%;background:var(--play);color:#fff;border:0;cursor:pointer;display:grid;place-items:center}
     .play svg{width:24px;height:24px;fill:#fff}
-
-    /* Tempo */
     .speed{display:flex;align-items:center;gap:8px;justify-content:center;margin-top:6px}
     .speed .label{font-size:12px;color:var(--muted)}
     .speed button{border:1px solid var(--line);background:#eef2f6;color:#2f3640;padding:6px 10px;border-radius:999px;font-size:12px;cursor:pointer}
     .speed button.active{border-color:#b7c2cf;box-shadow:0 0 0 1px #b7c2cf inset}
-
-    /* Footer */
     footer{color:#7d8590;text-align:center;font-size:12px;margin-top:6px}
     footer div{margin:4px 0}
     footer a{color:#7d8590;text-decoration:none}
     footer a:hover{text-decoration:underline;color:#2b3035}
-
-    /* Modal */
-    .modal{position:fixed; inset:0; background:rgba(0,0,0,.42);display:none; align-items:center; justify-content:center; z-index:9999;}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.42);display:none;align-items:center;justify-content:center;z-index:9999}
     .modal[open]{display:flex}
-    .modal-card{width:min(780px,92vw); max-height:86vh; background:#fff; color:#1f2530; border-radius:14px; overflow:hidden; display:flex; flex-direction:column;}
-    .modal-head{display:flex; justify-content:space-between; padding:12px 16px; background:#f6f7f9;}
-    .modal-body{padding:14px 16px; overflow:auto; font-size:14px; line-height:1.55;}
+    .modal-card{width:min(780px,92vw);max-height:86vh;background:#fff;color:#1f2530;border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+    .modal-head{display:flex;justify-content:space-between;padding:12px 16px;background:#f6f7f9}
+    .modal-body{padding:14px 16px;overflow:auto;font-size:14px;line-height:1.55}
+    .copy{border:1px solid var(--line);background:#f1f3f5;font-size:11px;padding:2px 6px;border-radius:6px;cursor:pointer}
+    .copy:hover{background:#e5e7eb}
+    .don-input{border:1px solid var(--line);border-radius:8px;padding:4px 8px;width:70px;text-align:right}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="topbar">
       <div class="title">Audioguide der Ev. Stadtkirche von Hessisch Lichtenau</div>
-      <div class="lang">
-        <button id="btn-de" class="active">🇩🇪 DE</button>
-        <button id="btn-en">🇬🇧 EN</button>
+      <div class="lang-select">
+        <label for="lang">Sprache</label>
+        <div class="select">
+          <select id="lang" aria-label="Sprache wählen">
+            <option value="de">🇩🇪 Deutsch</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="fr">🇫🇷 Français</option>
+            <option value="it">🇮🇹 Italiano</option>
+            <option value="es">🇪🇸 Español</option>
+          </select>
+        </div>
       </div>
     </div>
 
@@ -92,26 +89,21 @@
         </div>
       </div>
 
-      <!-- Controls -->
       <div class="controls">
-        <!-- Zurück -->
         <button id="back15" class="skip" aria-label="15 Sekunden zurück">
           <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
           <span>-15s</span>
         </button>
-        <!-- Play -->
         <button id="btn-play" class="play" aria-label="Abspielen">
           <svg id="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7-11-7z"/></svg>
           <svg id="icon-pause" viewBox="0 0 24 24" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
         </button>
-        <!-- Vor -->
         <button id="fwd15" class="skip" aria-label="15 Sekunden vor">
           <span>+15s</span>
           <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
         </button>
       </div>
 
-      <!-- Tempo -->
       <div class="speed">
         <span class="label">Tempo</span>
         <button data-rate="0.8">0.8×</button>
@@ -121,181 +113,167 @@
       </div>
     </section>
 
-    <!-- Footer -->
     <footer>
+      <div style="margin:8px 0">
+        <button id="openDonate" style="border:1px solid #d9dee5;background:#0f172a;color:#fff;padding:10px 14px;border-radius:999px;cursor:pointer">
+          Jetzt für die Kirchengemeinde spenden
+        </button>
+      </div>
+
       <div>© <span id="year"></span> Evangelische Stadtkirche Hessisch Lichtenau</div>
-      <div>Intro/Outro-Musik: Track „London“ · Musik von <a href="https://www.fiftysounds.com" target="_blank">fiftysounds.com</a></div>
-      <div><a class="legal-link" id="openLegal">Impressum & Datenschutz</a></div>
+      <div>Intro und Outro Musik: Track London, Musik von
+        <a href="https://www.fiftysounds.com" target="_blank">fiftysounds.com</a>
+      </div>
+
+      <div style="margin-top:6px">
+        <a class="legal-link" id="openLegal">Impressum und Datenschutz</a>
+      </div>
     </footer>
   </div>
 
   <audio id="audio" preload="metadata"></audio>
 
-  <!-- Modal -->
+  <!-- Impressum/Datenschutz Modal -->
   <div class="modal" id="legalModal">
     <div class="modal-card">
       <div class="modal-head">
-        <h3>Impressum & Datenschutz</h3>
+        <h3>Impressum und Datenschutz</h3>
         <button id="closeLegal">✕</button>
       </div>
       <div class="modal-body">
         <h4>Impressum</h4>
         <p><strong>Ev. Kirchengemeinde Hessisch Lichtenau</strong><br>
-        Mühlweg 21 · 37235 Hessisch Lichtenau<br>
-        Telefon: 05602 – 2403<br>
+        Mühlweg 21, 37235 Hessisch Lichtenau<br>
+        Telefon: 05602 2403<br>
         E-Mail: <a href="mailto:hessischlichtenau.gemeindebuero@ekkw.de">hessischlichtenau.gemeindebuero@ekkw.de</a></p>
         <p>Die Ev. Kirchengemeinde Hessisch Lichtenau ist eine Körperschaft des öffentlichen Rechts. Vertretungsberechtigt ist der Kirchenvorstand.</p>
         <h4>Verantwortlich nach §18 MStV</h4>
         <p>Pfarrerin Anja Peters, Mühlweg 21, 37235 Hessisch Lichtenau</p>
         <h4>Datenschutz</h4>
-        <p>Es werden keine Tracking-Dienste oder Cookies eingesetzt. Technisch notwendige Protokolle des Hosting-Providers werden kurzzeitig gespeichert.</p>
-        <p>Lokale Speicherung (Sprache & Wiedergabegeschwindigkeit) erfolgt ausschließlich in Ihrem Browser und kann jederzeit gelöscht werden.</p>
+        <p>Es werden keine Tracking-Dienste oder Cookies eingesetzt. Technisch notwendige Protokolle des Hosting-Providers werden nur kurzzeitig gespeichert.</p>
+        <p>Die lokale Speicherung von Sprache und Wiedergabegeschwindigkeit erfolgt ausschließlich in Ihrem Browser und kann jederzeit gelöscht werden.</p>
         <h4>Ihre Rechte</h4>
-        <p>Nach DSGVO: Auskunft, Berichtigung, Löschung, Einschränkung, Widerspruch, Datenübertragbarkeit. Beschwerden bei der Aufsichtsbehörde möglich.</p>
+        <p>Nach DSGVO: Auskunft, Berichtigung, Löschung, Einschränkung, Widerspruch und Datenübertragbarkeit. Beschwerden bei der Aufsichtsbehörde sind möglich.</p>
         <h4>Musiknachweis</h4>
-        <p>Intro/Outro-Musik: Track „London“ · Musik von <a href="https://www.fiftysounds.com" target="_blank">www.fiftysounds.com</a> (Attribution erforderlich).</p>
+        <p>Intro und Outro Musik: Track London, Musik von <a href="https://www.fiftysounds.com" target="_blank">www.fiftysounds.com</a>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Spenden Modal -->
+  <div class="modal" id="donateModal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>Spende an die Kirchengemeinde Hessisch Lichtenau</h3>
+        <button id="closeDonate">✕</button>
+      </div>
+      <div class="modal-body">
+        <p>Vielen Dank für Ihre Unterstützung. Sie können direkt per Banküberweisung spenden. Scannen Sie den QR-Code mit Ihrer Banking-App oder übernehmen Sie die Daten manuell.</p>
+        <div style="margin-bottom:10px">
+          <label for="don-amount">Betrag (€): </label>
+          <input id="don-amount" class="don-input" type="number" value="5" min="1" step="0.5">
+        </div>
+        <canvas id="donateQR" style="width:200px;height:200px;border:1px solid #d9dee5;border-radius:8px;background:#fff"></canvas>
+        <div style="margin-top:10px">
+          <div><strong>Empfänger:</strong> <span id="don-name">Kirchenkreisamt Eschwege</span> <button class="copy" data-copy="#don-name">Kopieren</button></div>
+          <div><strong>IBAN:</strong> <span id="don-iban">DE91520604100001200100</span> <button class="copy" data-copy="#don-iban">Kopieren</button></div>
+          <div><strong>Verwendungszweck:</strong> <span id="don-ref">Kirchengemeinde, Hessisch Lichtenau, Audioguide Spende</span> <button class="copy" data-copy="#don-ref">Kopieren</button></div>
+        </div>
+        <p style="font-size:12px;color:#6b7280;margin-top:10px">
+          Für Spendenbescheinigungen geben Sie bitte im Verwendungszweck zusätzlich Ihren Namen und Ihre Anschrift an.
+        </p>
       </div>
     </div>
   </div>
 
   <script>
     (()=> {
-      // === Dateien (Innen & Außen) =========================
       const files = {
-        inside: {
-          de: "Audioguide Stadtkirche (deutsch).mp3",
-          en: "Audioguide Stadtkirche (englisch).mp3"
-        },
-        outside: {
-          de: "Audioguide Stadtkirche außen (deutsch).mp3",
-          en: "Audioguide Stadtkirche außen (englisch).mp3"
-        }
+        inside:{de:"Audioguide Stadtkirche (deutsch).mp3",en:"Audioguide Stadtkirche (englisch).mp3",fr:"Audioguide Stadtkirche (französisch).mp3",it:"Audioguide Stadtkirche (italienisch).mp3",es:"Audioguide Stadtkirche (spanisch).mp3"},
+        outside:{de:"Audioguide Stadtkirche außen (deutsch).mp3",en:"Audioguide Stadtkirche außen (englisch).mp3",fr:"Audioguide Stadtkirche außen (französisch).mp3",it:"Audioguide Stadtkirche außen (italienisch).mp3",es:"Audioguide Stadtkirche außen (spanisch).mp3"}
       };
 
-      // === Elemente =======================================
-      const audio=document.getElementById("audio"),
-            btnPlay=document.getElementById("btn-play"),
-            iconPlay=document.getElementById("icon-play"),
-            iconPause=document.getElementById("icon-pause"),
-            btnDe=document.getElementById("btn-de"),
-            btnEn=document.getElementById("btn-en"),
-            back15=document.getElementById("back15"),
-            fwd15=document.getElementById("fwd15"),
-            progress=document.getElementById("progress"),
-            bar=document.getElementById("bar"),
-            thumb=document.getElementById("thumb"),
-            cur=document.getElementById("cur"),
-            dur=document.getElementById("dur");
+      const audio=document.getElementById("audio"),btnPlay=document.getElementById("btn-play"),
+      iconPlay=document.getElementById("icon-play"),iconPause=document.getElementById("icon-pause"),
+      back15=document.getElementById("back15"),fwd15=document.getElementById("fwd15"),
+      progress=document.getElementById("progress"),bar=document.getElementById("bar"),
+      thumb=document.getElementById("thumb"),cur=document.getElementById("cur"),dur=document.getElementById("dur"),
+      selectLang=document.getElementById("lang");
 
       document.getElementById("year").textContent=new Date().getFullYear();
-
-      // === Zustand (Sprache & Bereich) ====================
-      const params = new URLSearchParams(location.search);
-      let area = (params.get("area")==="outside"||params.get("area")==="inside")
-        ? params.get("area")
-        : (localStorage.getItem("hl-area") || "inside");
-
-      let lang = (params.get("lang")==="en"||params.get("lang")==="de")
-        ? params.get("lang")
-        : (localStorage.getItem("hl-lang") || "de");
-
+      const params=new URLSearchParams(location.search);
+      let area=(params.get("area")==="outside"||params.get("area")==="inside")?params.get("area"):(localStorage.getItem("hl-area")||"inside");
+      const supported=["de","en","fr","it","es"];
+      function normalizeLang(v){return supported.includes(v)?v:"de";}
+      let lang=normalizeLang(params.get("lang")||localStorage.getItem("hl-lang")||"de");
+      selectLang.value=lang;
       const fmt=s=>(isNaN(s)||!isFinite(s))?"0:00":`${Math.floor(s/60)}:${Math.floor(s%60).toString().padStart(2,"0")}`;
-
-      function updatePlayIcon(p){iconPlay.style.display=p?"block":"none";iconPause.style.display=p?"none":"block";}
-
-      function updateProgressUI(){
-        if(!audio.duration) return;
-        const pct=(audio.currentTime/audio.duration)*100;
-        bar.style.width=pct+"%";thumb.style.left=pct+"%";
-        cur.textContent=fmt(audio.currentTime); dur.textContent=fmt(audio.duration);
-      }
-
-      // Quelle bestimmen (mit sicherem Fallback auf inside/de)
-      function resolveSrc(){
-        if (files[area] && files[area][lang]) return files[area][lang];
-        if (files.inside && files.inside.de) return files.inside.de;
-        // allersicherster Fallback
-        const firstArea = Object.keys(files)[0];
-        const firstLang = files[firstArea] ? Object.keys(files[firstArea])[0] : "de";
-        return files[firstArea]?.[firstLang] || "";
-      }
-
-      function setSource(){
-        const src = resolveSrc();
-        if (audio.getAttribute("src") !== src) {
-          audio.src = src;
-          audio.load();
-        }
-        // aktuellen Zustand merken
-        localStorage.setItem("hl-area", area);
-        localStorage.setItem("hl-lang", lang);
-        // URL schön halten, damit geteilte Links stimmen
-        const u = new URL(location.href);
-        u.searchParams.set("area", area);
-        u.searchParams.set("lang", lang);
-        history.replaceState({}, "", u);
-      }
-
+      function updatePlayIcon(showPlay){iconPlay.style.display=showPlay?"block":"none";iconPause.style.display=showPlay?"none":"block";}
+      function updateProgressUI(){if(!audio.duration)return;const pct=(audio.currentTime/audio.duration)*100;bar.style.width=pct+"%";thumb.style.left=pct+"%";cur.textContent=fmt(audio.currentTime);dur.textContent=fmt(audio.duration);}
+      function resolveSrc(){if(files[area]&&files[area][lang])return files[area][lang];if(files.inside&&files.inside.de)return files.inside.de;return "";}
+      function setSource(){const src=resolveSrc();if(audio.getAttribute("src")!==src){audio.src=src;audio.load();}localStorage.setItem("hl-area",area);localStorage.setItem("hl-lang",lang);const u=new URL(location.href);u.searchParams.set("area",area);u.searchParams.set("lang",lang);history.replaceState({}, "", u);}
       function startPlayback(){audio.play().then(()=>updatePlayIcon(false)).catch(()=>updatePlayIcon(true));}
-
-      function setLanguage(next){
-        lang=next;
-        localStorage.setItem("hl-lang",lang);
-        btnDe.classList.toggle("active",lang==="de");
-        btnEn.classList.toggle("active",lang==="en");
-        setSource();
-        startPlayback();
-      }
-
-      // Initiale Quelle
-      setLanguage(lang); // setzt Buttons & ruft setSource()
-      // Sprach-Buttons
-      btnDe.onclick=()=>setLanguage("de");
-      btnEn.onclick=()=>setLanguage("en");
-
-      // Play/Pause
+      function setLanguage(next){lang=normalizeLang(next);selectLang.value=lang;setSource();startPlayback();}
+      setLanguage(lang);
+      selectLang.addEventListener("change", e=> setLanguage(e.target.value));
       btnPlay.onclick=()=>{if(audio.paused){startPlayback();}else{audio.pause();updatePlayIcon(true);}};
-
-      // Skip
       back15.onclick=()=>{audio.currentTime=Math.max(0,audio.currentTime-15);updateProgressUI();};
-      fwd15.onclick =()=>{audio.currentTime=Math.min(audio.duration||audio.currentTime+15,audio.currentTime+15);updateProgressUI();};
-
-      // Progress & Ende
+      fwd15.onclick=()=>{audio.currentTime=Math.min(audio.duration||audio.currentTime+15,audio.currentTime+15);updateProgressUI();};
       audio.addEventListener("loadedmetadata",updateProgressUI);
       audio.addEventListener("timeupdate",updateProgressUI);
       audio.addEventListener("ended",()=>updatePlayIcon(true));
-
-      // Scrubbing
       let seeking=false;
       function pctFromEvent(e){const r=progress.getBoundingClientRect();const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left;return Math.min(Math.max(0,x/r.width),1);}
-      function seekTo(p){if(!audio.duration) return; audio.currentTime=p*audio.duration;updateProgressUI();}
+      function seekTo(p){if(!audio.duration)return;audio.currentTime=p*audio.duration;updateProgressUI();}
       progress.addEventListener("mousedown",e=>{seeking=true;seekTo(pctFromEvent(e));});
       window.addEventListener("mousemove",e=>{if(seeking)seekTo(pctFromEvent(e));});
       window.addEventListener("mouseup",()=>seeking=false);
+      const speedButtons=document.querySelectorAll(".speed button");
+      function applyRate(rate){audio.playbackRate=rate;speedButtons.forEach(b=>b.classList.toggle("active",parseFloat(b.dataset.rate)===rate));localStorage.setItem("hl-speed",rate);}
+      speedButtons.forEach(btn=>{btn.addEventListener("click",()=>{const rate=parseFloat(btn.dataset.rate);if(!isNaN(rate))applyRate(rate);});});
+      const savedRate=parseFloat(localStorage.getItem("hl-speed"));if(!isNaN(savedRate))applyRate(savedRate);
 
-      /* === Tempo-Steuerung (wie gehabt) === */
-      const speedButtons = document.querySelectorAll(".speed button");
-      function applyRate(rate){
-        audio.playbackRate = rate;
-        speedButtons.forEach(b => b.classList.toggle("active", parseFloat(b.dataset.rate) === rate));
-        localStorage.setItem("hl-speed", rate);
-      }
-      speedButtons.forEach(btn=>{
+      // Impressum/Datenschutz Modal
+      const legalModal=document.getElementById("legalModal");
+      document.getElementById("openLegal").onclick=()=>legalModal.setAttribute("open","");
+      document.getElementById("closeLegal").onclick=()=>legalModal.removeAttribute("open");
+      legalModal.onclick=(e)=>{if(e.target===legalModal)legalModal.removeAttribute("open");};
+
+      // Spendenfunktion
+      const donateModal=document.getElementById("donateModal");
+      const openDonate=document.getElementById("openDonate");
+      const closeDonate=document.getElementById("closeDonate");
+      openDonate.onclick=()=>donateModal.setAttribute("open","");
+      closeDonate.onclick=()=>donateModal.removeAttribute("open");
+      donateModal.onclick=(e)=>{if(e.target===donateModal)donateModal.removeAttribute("open");};
+      document.querySelectorAll(".copy").forEach(btn=>{
         btn.addEventListener("click",()=>{
-          const rate=parseFloat(btn.dataset.rate);
-          if(!isNaN(rate)) applyRate(rate);
+          const sel=btn.getAttribute("data-copy");
+          const el=document.querySelector(sel);
+          if(!el)return;
+          navigator.clipboard.writeText(el.textContent.trim()).then(()=>{
+            btn.textContent="Kopiert";
+            setTimeout(()=>btn.textContent="Kopieren",1500);
+          });
         });
       });
-      const savedRate = parseFloat(localStorage.getItem("hl-speed"));
-      if(!isNaN(savedRate)) applyRate(savedRate);
+      const qrCanvas=document.getElementById("donateQR");
+      const amountInput=document.getElementById("don-amount");
+      function genQR(){
+        const amount=parseFloat(amountInput.value)||0;
+        const epc=`BCD
+001
+1
+SCT
 
-      // Modal
-      const modal=document.getElementById('legalModal');
-      const open=document.getElementById('openLegal');
-      const close=document.getElementById('closeLegal');
-      open.onclick=()=>modal.setAttribute('open','');
-      close.onclick=()=>modal.removeAttribute('open');
-      modal.onclick=(e)=>{if(e.target===modal)modal.removeAttribute('open');};
+Kirchenkreisamt Eschwege
+DE91520604100001200100
+EUR${amount.toFixed(2)}
+Kirchengemeinde, Hessisch Lichtenau, Audioguide Spende`;
+        QRCode.toCanvas(qrCanvas, epc, {margin:1,width:200});
+      }
+      amountInput.addEventListener("input", genQR);
+      genQR();
     })();
   </script>
 </body>
